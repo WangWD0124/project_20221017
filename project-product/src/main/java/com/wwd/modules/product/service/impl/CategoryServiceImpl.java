@@ -2,6 +2,7 @@ package com.wwd.modules.product.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wwd.common.service.impl.CrudServiceImpl;
+import com.wwd.common.utils.ConvertUtils;
 import com.wwd.modules.product.dao.CategoryDao;
 import com.wwd.modules.product.dto.CategoryDTO;
 import com.wwd.modules.product.entity.CategoryEntity;
@@ -9,7 +10,10 @@ import com.wwd.modules.product.service.CategoryService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 
 /**
  * 商品三级分类
@@ -30,5 +34,31 @@ public class CategoryServiceImpl extends CrudServiceImpl<CategoryDao, CategoryEn
         return wrapper;
     }
 
+    /**
+     * 查询全部三级分类，并以树形结构返回
+     */
+    @Override
+    public List<CategoryDTO> listWithTree() {
+        List<CategoryEntity> allCategoryEntities = baseDao.selectList(null);//全部分类
+        return allCategoryEntities.stream().filter(categoryEntity ->
+                categoryEntity.getCatLevel() == 1 //全部一级分类
+        ).map(rootCategoryEntity -> {
+            CategoryDTO rootCategoryDTO = ConvertUtils.sourceToTarget(rootCategoryEntity, CategoryDTO.class);
+            rootCategoryDTO.setChildren(getChildrens(rootCategoryEntity, allCategoryEntities));//为一级分类添加二级分类
+            return rootCategoryDTO;
+        }).collect(Collectors.toList());
+
+    }
+
+    private List<CategoryDTO> getChildrens(CategoryEntity root, List<CategoryEntity> all) {
+
+        return all.stream().filter(categoryEntity ->
+                categoryEntity.getParentCid().equals(root.getCatId())
+        ).map(rootCategoryEntity -> {
+            CategoryDTO rootCategoryDTO = ConvertUtils.sourceToTarget(rootCategoryEntity, CategoryDTO.class);
+            rootCategoryDTO.setChildren(getChildrens(rootCategoryEntity, all));//为上一级分类添加下一级分类
+            return rootCategoryDTO;
+        }).collect(Collectors.toList());
+    }
 
 }

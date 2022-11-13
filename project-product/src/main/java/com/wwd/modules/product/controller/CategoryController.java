@@ -40,24 +40,22 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
-    @GetMapping("page")
-    @ApiOperation("分页")
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = Constant.PAGE, value = "当前页码，从1开始", paramType = "query", required = true, dataType="int") ,
-        @ApiImplicitParam(name = Constant.LIMIT, value = "每页显示记录数", paramType = "query",required = true, dataType="int") ,
-        @ApiImplicitParam(name = Constant.ORDER_FIELD, value = "排序字段", paramType = "query", dataType="String") ,
-        @ApiImplicitParam(name = Constant.ORDER, value = "排序方式，可选值(asc、desc)", paramType = "query", dataType="String")
-    })
-    @RequiresPermissions("product:category:page")
-    public Result<PageData<CategoryDTO>> page(@ApiIgnore @RequestParam Map<String, Object> params){
-        PageData<CategoryDTO> page = categoryService.page(params);
+    /**
+     * 查询全部三级分类，并以树形结构返回
+     */
+    @GetMapping("/list")
+    @ApiOperation("列表")
+    @RequiresPermissions("product:category:list")
+    public Result<List<CategoryDTO>> list() {
+        List<CategoryDTO> list = categoryService.listWithTree();
 
-        return new Result<PageData<CategoryDTO>>().ok(page);
+        return new Result<List<CategoryDTO>>().ok(list);
     }
+
 
     @GetMapping("{id}")
     @ApiOperation("信息")
-    @RequiresPermissions("product:category:info")
+    //@RequiresPermissions("product:category:info")
     public Result<CategoryDTO> get(@PathVariable("id") Long id){
         CategoryDTO data = categoryService.get(id);
 
@@ -67,7 +65,7 @@ public class CategoryController {
     @PostMapping
     @ApiOperation("保存")
     @LogOperation("保存")
-    @RequiresPermissions("product:category:save")
+    //@RequiresPermissions("product:category:save")
     public Result save(@RequestBody CategoryDTO dto){
         //效验数据
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
@@ -80,7 +78,7 @@ public class CategoryController {
     @PutMapping
     @ApiOperation("修改")
     @LogOperation("修改")
-    @RequiresPermissions("product:category:update")
+    //@RequiresPermissions("product:category:update")
     public Result update(@RequestBody CategoryDTO dto){
         //效验数据
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
@@ -93,7 +91,7 @@ public class CategoryController {
     @DeleteMapping
     @ApiOperation("删除")
     @LogOperation("删除")
-    @RequiresPermissions("product:category:delete")
+    //@RequiresPermissions("product:category:delete")
     public Result delete(@RequestBody Long[] ids){
         //效验数据
         AssertUtils.isArrayEmpty(ids, "id");

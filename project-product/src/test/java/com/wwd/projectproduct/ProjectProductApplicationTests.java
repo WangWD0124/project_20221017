@@ -10,4 +10,9 @@ class ProjectProductApplicationTests {
     void contextLoads() {
     }
 
+    @Test
+    void testDeleteCategory(){
+
+    }
+
 }

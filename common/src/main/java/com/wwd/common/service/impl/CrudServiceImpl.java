@@ -75,6 +75,7 @@ public abstract class CrudServiceImpl<M extends BaseMapper<T>, T, D> extends Bas
 
     @Override
     public void delete(Long[] ids) {
+        System.out.println("++++++++++++++++++++++++++++++++++++");
         baseDao.deleteBatchIds(Arrays.asList(ids));
     }
 }

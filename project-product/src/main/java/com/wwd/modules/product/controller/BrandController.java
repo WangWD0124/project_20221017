@@ -80,7 +80,7 @@ public class BrandController {
     @PutMapping
     @ApiOperation("修改")
     @LogOperation("修改")
-    @RequiresPermissions("product:brand:update")
+    //@RequiresPermissions("product:brand:update")
     public Result update(@RequestBody BrandDTO dto){
         //效验数据
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);

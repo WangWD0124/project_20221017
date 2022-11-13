@@ -1,0 +1,21 @@
+server:
+  port: 9001
+  servlet:
+    context-path: /admin  # 访问路径起点
+    session:
+      cookie:
+        http-only: true
+
+spring:
+  application:
+    name: admin # 服务名称
+  cloud:
+    nacos:
+      server-addr: 192.168.145.101:80  # nginx:80 # nginx反向代理nacos地址
+      config: # 读取nacos配置中心上的配置文件
+        file-extension: yaml # 文件名后缀
+      discovery:
+        namespace: dev666
+        group: DEFAULT_GROUP # m默认可不写
+
+

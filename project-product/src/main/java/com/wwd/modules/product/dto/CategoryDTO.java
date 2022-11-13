@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -46,5 +47,9 @@ public class CategoryDTO implements Serializable {
 	@ApiModelProperty(value = "商品数量")
 	private Integer productCount;
 
-
+	/**
+	 * 子分类列表（数据库不存在字段）
+	 */
+	@ApiModelProperty(value = "子分类列表")
+	private List<CategoryDTO> children;
 }
