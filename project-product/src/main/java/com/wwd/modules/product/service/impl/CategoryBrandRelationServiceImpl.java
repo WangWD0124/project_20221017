@@ -1,6 +1,9 @@
 package com.wwd.modules.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.wwd.common.page.PageData;
 import com.wwd.common.service.impl.CrudServiceImpl;
 import com.wwd.modules.product.dao.CategoryBrandRelationDao;
 import com.wwd.modules.product.dto.CategoryBrandRelationDTO;
@@ -31,4 +34,12 @@ public class CategoryBrandRelationServiceImpl extends CrudServiceImpl<CategoryBr
     }
 
 
+    @Override
+    public PageData<CategoryBrandRelationDTO> page(Map<String, Object> params, Long brandId) {
+
+        LambdaQueryWrapper<CategoryBrandRelationEntity> wrapper = new LambdaQueryWrapper();
+        wrapper.eq(CategoryBrandRelationEntity::getBrandId, brandId);
+        IPage<CategoryBrandRelationEntity> page = baseDao.selectPage(getPage(params, null, true), wrapper);
+        return getPageData(page, currentDtoClass());
+    }
 }

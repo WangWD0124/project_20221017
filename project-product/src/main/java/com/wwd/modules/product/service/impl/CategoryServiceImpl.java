@@ -10,6 +10,8 @@ import com.wwd.modules.product.service.CategoryService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -61,4 +63,26 @@ public class CategoryServiceImpl extends CrudServiceImpl<CategoryDao, CategoryEn
         }).collect(Collectors.toList());
     }
 
+    @Override
+    public Long[] findCatelogPath(Long catelogId) {
+
+        List<Long> catelogPath = new ArrayList<>();
+        catelogPath.add(catelogId);
+        findParentCid(catelogPath, catelogId);
+        Collections.reverse(catelogPath);
+        return catelogPath.toArray(new Long[catelogPath.size()]);
+    }
+
+    private void findParentCid(List<Long> catelogPath, Long catelogId) {
+        Long parentCid = baseDao.getParentCidBycatId(catelogId);
+        if (parentCid != 0){
+            catelogPath.add(parentCid);
+            findParentCid(catelogPath, parentCid);
+        }
+    }
+
+    @Override
+    public String findCategoryName(Long catelogId) {
+        return baseDao.getCategoryNameBycatId(catelogId);
+    }
 }

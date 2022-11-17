@@ -1,8 +1,11 @@
 package com.wwd.modules.product.service;
 
+import com.wwd.common.page.PageData;
 import com.wwd.common.service.CrudService;
 import com.wwd.modules.product.dto.CategoryBrandRelationDTO;
 import com.wwd.modules.product.entity.CategoryBrandRelationEntity;
+
+import java.util.Map;
 
 /**
  * 品牌分类关联
@@ -12,4 +15,5 @@ import com.wwd.modules.product.entity.CategoryBrandRelationEntity;
  */
 public interface CategoryBrandRelationService extends CrudService<CategoryBrandRelationEntity, CategoryBrandRelationDTO> {
 
+    PageData<CategoryBrandRelationDTO> page(Map<String, Object> params, Long brandId);
 }

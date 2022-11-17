@@ -1,6 +1,9 @@
 package com.wwd.modules.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.wwd.common.page.PageData;
 import com.wwd.common.service.impl.CrudServiceImpl;
 import com.wwd.modules.product.dao.AttrDao;
 import com.wwd.modules.product.dto.AttrDTO;
@@ -31,4 +34,19 @@ public class AttrServiceImpl extends CrudServiceImpl<AttrDao, AttrEntity, AttrDT
     }
 
 
+    @Override
+    public PageData<AttrDTO> page(Map<String, Object> params, String attrType, Long catelog_id) {
+
+        LambdaQueryWrapper<AttrEntity> wrapper = new LambdaQueryWrapper();
+        wrapper.eq(AttrEntity::getAttrType, attrType);//查询规格属性或销售属性
+        if (catelog_id != 0){
+            wrapper.eq(AttrEntity::getCatelogId, catelog_id);
+        }
+        String key = (String) params.get("key");
+        if (key != null){
+            wrapper.eq(AttrEntity::getAttrId, key).or().like(AttrEntity::getAttrName, key);
+        }
+        IPage<AttrEntity> page = baseDao.selectPage(getPage(params, null, true), wrapper);
+        return getPageData(page, currentDtoClass());
+    }
 }

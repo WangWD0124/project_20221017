@@ -13,6 +13,7 @@ import com.wwd.common.validator.group.UpdateGroup;
 import com.wwd.modules.product.dto.AttrGroupDTO;
 import com.wwd.modules.product.excel.AttrGroupExcel;
 import com.wwd.modules.product.service.AttrGroupService;
+import com.wwd.modules.product.service.CategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -39,18 +40,20 @@ import java.util.Map;
 public class AttrGroupController {
     @Autowired
     private AttrGroupService attrGroupService;
+    @Autowired
+    private CategoryService categoryService;
 
-    @GetMapping("page")
-    @ApiOperation("分页")
+    @GetMapping("page/{catelog_id}")
+    @ApiOperation("根据三级分类查询分页")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = Constant.PAGE, value = "当前页码，从1开始", paramType = "query", required = true, dataType="int") ,
-        @ApiImplicitParam(name = Constant.LIMIT, value = "每页显示记录数", paramType = "query",required = true, dataType="int") ,
-        @ApiImplicitParam(name = Constant.ORDER_FIELD, value = "排序字段", paramType = "query", dataType="String") ,
-        @ApiImplicitParam(name = Constant.ORDER, value = "排序方式，可选值(asc、desc)", paramType = "query", dataType="String")
+            @ApiImplicitParam(name = Constant.PAGE, value = "当前页码，从1开始", paramType = "query", required = true, dataType="int") ,
+            @ApiImplicitParam(name = Constant.LIMIT, value = "每页显示记录数", paramType = "query",required = true, dataType="int") ,
+            @ApiImplicitParam(name = Constant.ORDER_FIELD, value = "排序字段", paramType = "query", dataType="String") ,
+            @ApiImplicitParam(name = Constant.ORDER, value = "排序方式，可选值(asc、desc)", paramType = "query", dataType="String")
     })
     @RequiresPermissions("product:attrgroup:page")
-    public Result<PageData<AttrGroupDTO>> page(@ApiIgnore @RequestParam Map<String, Object> params){
-        PageData<AttrGroupDTO> page = attrGroupService.page(params);
+    public Result<PageData<AttrGroupDTO>> pageByCatelog_id(@ApiIgnore @RequestParam Map<String, Object> params, @PathVariable("catelog_id") Long catelog_id){
+        PageData<AttrGroupDTO> page = attrGroupService.page(params, catelog_id);
 
         return new Result<PageData<AttrGroupDTO>>().ok(page);
     }
@@ -60,6 +63,9 @@ public class AttrGroupController {
     @RequiresPermissions("product:attrgroup:info")
     public Result<AttrGroupDTO> get(@PathVariable("id") Long id){
         AttrGroupDTO data = attrGroupService.get(id);
+        //用于修改页面渲染级联选择器：分类路径
+        Long[] catelogPath = categoryService.findCatelogPath(data.getCatelogId());
+        data.setCatelogPath(catelogPath);
 
         return new Result<AttrGroupDTO>().ok(data);
     }

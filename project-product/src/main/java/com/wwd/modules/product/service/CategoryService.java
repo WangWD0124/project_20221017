@@ -15,4 +15,8 @@ import java.util.List;
 public interface CategoryService extends CrudService<CategoryEntity, CategoryDTO> {
 
     List<CategoryDTO> listWithTree();
+
+    Long[] findCatelogPath(Long catelogId);
+
+    String findCategoryName(Long catelogId);
 }

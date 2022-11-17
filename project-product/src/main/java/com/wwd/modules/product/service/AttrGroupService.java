@@ -1,8 +1,11 @@
 package com.wwd.modules.product.service;
 
+import com.wwd.common.page.PageData;
 import com.wwd.common.service.CrudService;
 import com.wwd.modules.product.dto.AttrGroupDTO;
 import com.wwd.modules.product.entity.AttrGroupEntity;
+
+import java.util.Map;
 
 /**
  * 属性分组
@@ -12,4 +15,5 @@ import com.wwd.modules.product.entity.AttrGroupEntity;
  */
 public interface AttrGroupService extends CrudService<AttrGroupEntity, AttrGroupDTO> {
 
+    PageData<AttrGroupDTO> page(Map<String, Object> params, Long catelog_id);
 }

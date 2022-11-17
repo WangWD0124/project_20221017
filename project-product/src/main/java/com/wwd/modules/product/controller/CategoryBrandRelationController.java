@@ -13,6 +13,7 @@ import com.wwd.common.validator.group.UpdateGroup;
 import com.wwd.modules.product.dto.CategoryBrandRelationDTO;
 import com.wwd.modules.product.excel.CategoryBrandRelationExcel;
 import com.wwd.modules.product.service.CategoryBrandRelationService;
+import com.wwd.modules.product.service.CategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -39,8 +40,10 @@ import java.util.Map;
 public class CategoryBrandRelationController {
     @Autowired
     private CategoryBrandRelationService categoryBrandRelationService;
+    @Autowired
+    private CategoryService categoryService;
 
-    @GetMapping("page")
+    @GetMapping("page/{brandId}")
     @ApiOperation("分页")
     @ApiImplicitParams({
         @ApiImplicitParam(name = Constant.PAGE, value = "当前页码，从1开始", paramType = "query", required = true, dataType="int") ,
@@ -49,15 +52,15 @@ public class CategoryBrandRelationController {
         @ApiImplicitParam(name = Constant.ORDER, value = "排序方式，可选值(asc、desc)", paramType = "query", dataType="String")
     })
     @RequiresPermissions("product:categorybrandrelation:page")
-    public Result<PageData<CategoryBrandRelationDTO>> page(@ApiIgnore @RequestParam Map<String, Object> params){
-        PageData<CategoryBrandRelationDTO> page = categoryBrandRelationService.page(params);
+    public Result<PageData<CategoryBrandRelationDTO>> page(@ApiIgnore @RequestParam Map<String, Object> params, @PathVariable("brandId") Long brandId){
+        PageData<CategoryBrandRelationDTO> page = categoryBrandRelationService.page(params, brandId);
 
         return new Result<PageData<CategoryBrandRelationDTO>>().ok(page);
     }
 
     @GetMapping("{id}")
     @ApiOperation("信息")
-    @RequiresPermissions("product:categorybrandrelation:info")
+    //@RequiresPermissions("product:categorybrandrelation:info")
     public Result<CategoryBrandRelationDTO> get(@PathVariable("id") Long id){
         CategoryBrandRelationDTO data = categoryBrandRelationService.get(id);
 
@@ -71,6 +74,12 @@ public class CategoryBrandRelationController {
     public Result save(@RequestBody CategoryBrandRelationDTO dto){
         //效验数据
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
+
+        String categoryName = categoryService.findCategoryName(dto.getCatelogId());
+
+        System.out.println(categoryName);
+
+        dto.setCatelogName(categoryName);
 
         categoryBrandRelationService.save(dto);
 

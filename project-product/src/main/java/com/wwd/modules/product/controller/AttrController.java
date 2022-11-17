@@ -40,7 +40,7 @@ public class AttrController {
     @Autowired
     private AttrService attrService;
 
-    @GetMapping("page")
+    @GetMapping("{attrType}/page/{catelog_id}")
     @ApiOperation("分页")
     @ApiImplicitParams({
         @ApiImplicitParam(name = Constant.PAGE, value = "当前页码，从1开始", paramType = "query", required = true, dataType="int") ,
@@ -49,8 +49,8 @@ public class AttrController {
         @ApiImplicitParam(name = Constant.ORDER, value = "排序方式，可选值(asc、desc)", paramType = "query", dataType="String")
     })
     @RequiresPermissions("product:attr:page")
-    public Result<PageData<AttrDTO>> page(@ApiIgnore @RequestParam Map<String, Object> params){
-        PageData<AttrDTO> page = attrService.page(params);
+    public Result<PageData<AttrDTO>> page(@ApiIgnore @RequestParam Map<String, Object> params, @PathVariable("attrType") String attrType, @PathVariable("catelog_id") Long catelog_id){
+        PageData<AttrDTO> page = attrService.page(params, attrType, catelog_id);
 
         return new Result<PageData<AttrDTO>>().ok(page);
     }

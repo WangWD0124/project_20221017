@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -37,5 +38,10 @@ public class AttrGroupDTO implements Serializable {
 	@ApiModelProperty(value = "所属分类id")
 	private Long catelogId;
 
+	/**
+	 * 分类路径（用于修改页面渲染，数据库不存在字段）
+	 */
+	@ApiModelProperty(value = "分类路径")
+	private Long[] catelogPath;
 
 }

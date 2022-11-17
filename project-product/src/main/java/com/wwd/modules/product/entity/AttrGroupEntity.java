@@ -1,5 +1,7 @@
 package com.wwd.modules.product.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -18,6 +20,7 @@ public class AttrGroupEntity {
     /**
      * 分组id
      */
+    @TableId(type = IdType.AUTO)
 	private Long attrGroupId;
     /**
      * 组名

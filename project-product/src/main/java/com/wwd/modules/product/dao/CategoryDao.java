@@ -17,4 +17,12 @@ import java.util.Collection;
 @Mapper
 public interface CategoryDao extends BaseDao<CategoryEntity> {
 
+    /**
+     * 查询父分类id（用于修改页面渲染级联选择器：分类路径）
+     * @param catId
+     * @return
+     */
+    Long getParentCidBycatId(Long catId);
+
+    String getCategoryNameBycatId(Long catelogId);
 }

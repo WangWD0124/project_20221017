@@ -1,8 +1,11 @@
 package com.wwd.modules.product.service;
 
+import com.wwd.common.page.PageData;
 import com.wwd.common.service.CrudService;
 import com.wwd.modules.product.dto.BrandDTO;
 import com.wwd.modules.product.entity.BrandEntity;
+
+import java.util.Map;
 
 /**
  * 品牌
@@ -12,4 +15,5 @@ import com.wwd.modules.product.entity.BrandEntity;
  */
 public interface BrandService extends CrudService<BrandEntity, BrandDTO> {
 
+    PageData<BrandDTO> pageByCondition(Map<String, Object> params);
 }

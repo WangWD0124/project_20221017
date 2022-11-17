@@ -50,7 +50,8 @@ public class BrandController {
     })
     @RequiresPermissions("product:brand:page")
     public Result<PageData<BrandDTO>> page(@ApiIgnore @RequestParam Map<String, Object> params){
-        PageData<BrandDTO> page = brandService.page(params);
+        //PageData<BrandDTO> page = brandService.page(params);
+        PageData<BrandDTO> page = brandService.pageByCondition(params);
 
         return new Result<PageData<BrandDTO>>().ok(page);
     }

@@ -15,5 +15,12 @@
         <result property="productCount" column="product_count"/>
     </resultMap>
 
+    <select id="getParentCidBycatId" resultType="Long">
+        select parent_cid from pms_category where cat_id = #{value}
+    </select>
+
+    <select id="getCategoryNameBycatId" resultType="String">
+        select name from pms_category where cat_id = #{value}
+    </select>
 
 </mapper>

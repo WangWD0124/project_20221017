@@ -1,5 +1,6 @@
 package com.wwd.modules.product.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -50,6 +51,8 @@ public class CategoryDTO implements Serializable {
 	/**
 	 * 子分类列表（数据库不存在字段）
 	 */
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)//值为空不参与序列化
 	@ApiModelProperty(value = "子分类列表")
 	private List<CategoryDTO> children;
+
 }
