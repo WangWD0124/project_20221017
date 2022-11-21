@@ -10,9 +10,11 @@ import com.wwd.common.validator.ValidatorUtils;
 import com.wwd.common.validator.group.AddGroup;
 import com.wwd.common.validator.group.DefaultGroup;
 import com.wwd.common.validator.group.UpdateGroup;
+import com.wwd.modules.product.dto.AttrDTO;
 import com.wwd.modules.product.dto.AttrGroupDTO;
 import com.wwd.modules.product.excel.AttrGroupExcel;
 import com.wwd.modules.product.service.AttrGroupService;
+import com.wwd.modules.product.service.AttrService;
 import com.wwd.modules.product.service.CategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +41,8 @@ import java.util.Map;
 @RequestMapping("product/attrgroup")
 @Api(tags="属性分组")
 public class AttrGroupController {
+    @Autowired
+    private AttrService attrService;
     @Autowired
     private AttrGroupService attrGroupService;
     @Autowired
@@ -58,13 +63,35 @@ public class AttrGroupController {
         return new Result<PageData<AttrGroupDTO>>().ok(page);
     }
 
+    @GetMapping("list/withAttr/{catelog_id}")
+    @ApiOperation("根据三级分类查询属性组包含各个属性")
+    @RequiresPermissions("product:attrgroup:list")
+    public Result<List<AttrGroupDTO>> listWithAttrByCatelog_id(@PathVariable("catelog_id") Long catelog_id){
+
+        //根据catelog_id查询三级分类下的属性分组列表
+        List<AttrGroupDTO> attrGroupDTOList = attrGroupService.listWithAttrByCatelog_id(catelog_id);
+
+        //根据attrGroupId查询每一个属性分组下的属性列表
+        List<AttrDTO> attrDTOList = new ArrayList<>();
+
+        for (AttrGroupDTO attrGroupDTO : attrGroupDTOList) {
+            //每一个属性分组下的属性列表（包含基本属性、销售属性）
+            attrDTOList = attrService.getByAttrGroupId(attrGroupDTO.getAttrGroupId());
+            attrGroupDTO.setAttrs(attrDTOList);
+        }
+
+        return new Result<List<AttrGroupDTO>>().ok(attrGroupDTOList);
+    }
+
     @GetMapping("{id}")
     @ApiOperation("信息")
     @RequiresPermissions("product:attrgroup:info")
     public Result<AttrGroupDTO> get(@PathVariable("id") Long id){
         AttrGroupDTO data = attrGroupService.get(id);
+
         //用于修改页面渲染级联选择器：分类路径
         Long[] catelogPath = categoryService.findCatelogPath(data.getCatelogId());
+
         data.setCatelogPath(catelogPath);
 
         return new Result<AttrGroupDTO>().ok(data);

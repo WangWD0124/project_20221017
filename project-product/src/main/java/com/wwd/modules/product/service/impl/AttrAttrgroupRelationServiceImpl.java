@@ -1,7 +1,9 @@
 package com.wwd.modules.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wwd.common.service.impl.CrudServiceImpl;
+import com.wwd.common.utils.ConvertUtils;
 import com.wwd.modules.product.dao.AttrAttrgroupRelationDao;
 import com.wwd.modules.product.dto.AttrAttrgroupRelationDTO;
 import com.wwd.modules.product.entity.AttrAttrgroupRelationEntity;
@@ -31,4 +33,15 @@ public class AttrAttrgroupRelationServiceImpl extends CrudServiceImpl<AttrAttrgr
     }
 
 
+    @Override
+    public Long findAttrGroupId(Long attrId) {
+        return baseDao.getAttrGroupIdByAttrId(attrId);
+    }
+
+    @Override
+    public AttrAttrgroupRelationDTO getByAttrId(Long attrId) {
+        LambdaQueryWrapper<AttrAttrgroupRelationEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(AttrAttrgroupRelationEntity::getAttrId, attrId);
+        return ConvertUtils.sourceToTarget(baseDao.selectOne(wrapper), AttrAttrgroupRelationDTO.class);
+    }
 }

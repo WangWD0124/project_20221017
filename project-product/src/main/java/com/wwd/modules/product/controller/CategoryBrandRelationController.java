@@ -58,6 +58,15 @@ public class CategoryBrandRelationController {
         return new Result<PageData<CategoryBrandRelationDTO>>().ok(page);
     }
 
+    @GetMapping("/brands/list/{catelog_id}")
+    @ApiOperation("信息")
+    //@RequiresPermissions("product:categorybrandrelation:info")
+    public Result<List<CategoryBrandRelationDTO>> getByCatelog_id(@PathVariable("catelog_id") Long catelog_id){
+        List<CategoryBrandRelationDTO> list = categoryBrandRelationService.getByCatelog_id(catelog_id);
+
+        return new Result<List<CategoryBrandRelationDTO>>().ok(list);
+    }
+
     @GetMapping("{id}")
     @ApiOperation("信息")
     //@RequiresPermissions("product:categorybrandrelation:info")

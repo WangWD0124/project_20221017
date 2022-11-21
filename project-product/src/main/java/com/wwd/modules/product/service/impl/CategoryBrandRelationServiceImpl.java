@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wwd.common.page.PageData;
 import com.wwd.common.service.impl.CrudServiceImpl;
+import com.wwd.common.utils.ConvertUtils;
 import com.wwd.modules.product.dao.CategoryBrandRelationDao;
 import com.wwd.modules.product.dto.CategoryBrandRelationDTO;
 import com.wwd.modules.product.entity.CategoryBrandRelationEntity;
@@ -12,6 +13,7 @@ import com.wwd.modules.product.service.CategoryBrandRelationService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,4 +44,14 @@ public class CategoryBrandRelationServiceImpl extends CrudServiceImpl<CategoryBr
         IPage<CategoryBrandRelationEntity> page = baseDao.selectPage(getPage(params, null, true), wrapper);
         return getPageData(page, currentDtoClass());
     }
+
+    @Override
+    public List<CategoryBrandRelationDTO> getByCatelog_id(Long catelog_id) {
+
+        LambdaQueryWrapper<CategoryBrandRelationEntity> wrapper = new LambdaQueryWrapper();
+        wrapper.eq(CategoryBrandRelationEntity::getCatelogId, catelog_id);
+        List<CategoryBrandRelationEntity> list = baseDao.selectList(wrapper);
+        return ConvertUtils.sourceToTarget(list, CategoryBrandRelationDTO.class);
+    }
+
 }

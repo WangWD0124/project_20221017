@@ -12,5 +12,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface AttrAttrgroupRelationDao extends BaseDao<AttrAttrgroupRelationEntity> {
-	
+
+    Long getAttrGroupIdByAttrId(Long attrId);
 }

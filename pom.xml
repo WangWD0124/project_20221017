@@ -23,7 +23,7 @@
         <module>api</module>
         <module>generator</module>
         <module>project-gateway</module>
-        <module>project-menber</module>
+        <module>project-member</module>
         <module>project-product</module>
         <module>project-ware</module>
         <module>project-coupon</module>

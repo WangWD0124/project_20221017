@@ -10,9 +10,12 @@ import com.wwd.common.validator.ValidatorUtils;
 import com.wwd.common.validator.group.AddGroup;
 import com.wwd.common.validator.group.DefaultGroup;
 import com.wwd.common.validator.group.UpdateGroup;
+import com.wwd.modules.product.dto.AttrAttrgroupRelationDTO;
 import com.wwd.modules.product.dto.AttrDTO;
 import com.wwd.modules.product.excel.AttrExcel;
+import com.wwd.modules.product.service.AttrAttrgroupRelationService;
 import com.wwd.modules.product.service.AttrService;
+import com.wwd.modules.product.service.CategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -39,6 +42,10 @@ import java.util.Map;
 public class AttrController {
     @Autowired
     private AttrService attrService;
+    @Autowired
+    private CategoryService categoryService;
+    @Autowired
+    private AttrAttrgroupRelationService attrAttrgroupRelationService;
 
     @GetMapping("{attrType}/page/{catelog_id}")
     @ApiOperation("分页")
@@ -55,11 +62,34 @@ public class AttrController {
         return new Result<PageData<AttrDTO>>().ok(page);
     }
 
+    @GetMapping("{attrType}/list/{catelog_id}")
+    @ApiOperation("列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = Constant.PAGE, value = "当前页码，从1开始", paramType = "query", required = true, dataType="int") ,
+            @ApiImplicitParam(name = Constant.LIMIT, value = "每页显示记录数", paramType = "query",required = true, dataType="int") ,
+            @ApiImplicitParam(name = Constant.ORDER_FIELD, value = "排序字段", paramType = "query", dataType="String") ,
+            @ApiImplicitParam(name = Constant.ORDER, value = "排序方式，可选值(asc、desc)", paramType = "query", dataType="String")
+    })
+    @RequiresPermissions("product:attr:page")
+    public Result<List<AttrDTO>> list(@ApiIgnore @RequestParam Map<String, Object> params, @PathVariable("attrType") String attrType, @PathVariable("catelog_id") Long catelog_id){
+        List<AttrDTO> list = attrService.list(attrType, catelog_id);
+
+        return new Result<List<AttrDTO>>().ok(list);
+    }
+
     @GetMapping("{id}")
     @ApiOperation("信息")
     @RequiresPermissions("product:attr:info")
     public Result<AttrDTO> get(@PathVariable("id") Long id){
         AttrDTO data = attrService.get(id);
+
+        //用于修改页面渲染级联选择器：分类路径
+        Long[] catelogPath = categoryService.findCatelogPath(data.getCatelogId());
+        data.setCatelogPath(catelogPath);
+
+        //其中的attrGroupId代表的属性分组和属性关联另外保存
+        Long attrGroupId = attrAttrgroupRelationService.findAttrGroupId(data.getAttrId());
+        data.setAttrGroupId(attrGroupId);
 
         return new Result<AttrDTO>().ok(data);
     }
@@ -74,6 +104,14 @@ public class AttrController {
 
         attrService.save(dto);
 
+        //而且基本属性和属性分组关联另外保存，但销售属性不用
+        if (dto.getAttrType() == 1){
+            AttrAttrgroupRelationDTO relationDTO = new AttrAttrgroupRelationDTO();
+            relationDTO.setAttrId(dto.getAttrId());
+            relationDTO.setAttrGroupId(dto.getAttrGroupId());
+            relationDTO.setAttrSort(0);
+            attrAttrgroupRelationService.save(relationDTO);
+        }
         return new Result();
     }
 
@@ -87,6 +125,16 @@ public class AttrController {
 
         attrService.update(dto);
 
+        //而且基本属性和属性分组关联另外修改，但销售属性不用
+        if (dto.getAttrType() == 1){
+            AttrAttrgroupRelationDTO relationDTO = attrAttrgroupRelationService.getByAttrId(dto.getAttrId());
+            if (!relationDTO.getAttrGroupId().equals(dto.getAttrGroupId())){
+                //TODO (排序）
+                //if (!relationDTO.getAttrSort().equals(dto.getAttrSort()))
+                relationDTO.setAttrGroupId(dto.getAttrGroupId());
+                attrAttrgroupRelationService.update(relationDTO);
+            }
+        }
         return new Result();
     }
 

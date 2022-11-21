@@ -15,5 +15,12 @@
         <result property="showDesc" column="show_desc"/>
     </resultMap>
 
+    <select id="getByAttrGroupId" resultType="com.wwd.modules.product.entity.AttrEntity">
+        select t1.*
+        from pms_attr t1 inner join pms_attr_attrgroup_relation t2
+        on t1.attr_id = t2.attr_id
+        where t2.attr_group_id = #{attr_group_id}
+    </select>
+
 
 </mapper>

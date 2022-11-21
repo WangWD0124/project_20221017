@@ -3,10 +3,18 @@ spring:
   cloud:
     gateway:
       routes: # 网关路由配置
-        - id: qq # 路由id，自定义，只要唯一即可
-          uri: https://www.qq.com # 路由的目标地址 http就是固定地址
+#        - id: qq # 路由id，自定义，只要唯一即可
+#          uri: https://www.qq.com # 路由的目标地址 http就是固定地址
+#          predicates: # 路由断言，也就是判断请求是否符合路由规则的条件
+#            - Path=/qq/** # 这个是按照路径匹配，只要以/user/开头就符合
+
+        - id: project-member # 路由id，自定义，只要唯一即可
+          # uri: http://localhost:9501 # 路由的目标地址 http就是固定地址
+          uri: lb://project-member # 路由的目标地址 lb就是负载均衡，后面跟服务名称
           predicates: # 路由断言，也就是判断请求是否符合路由规则的条件
-            - Path=/qq/** # 这个是按照路径匹配，只要以/user/开头就符合
+            - Path=/api/member/** # 这个是按照路径匹配，只要以/user/开头就符合要求
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment} # 路径重写
 
         - id: project-product # 路由id，自定义，只要唯一即可
           # uri: http://localhost:9101 # 路由的目标地址 http就是固定地址
@@ -26,26 +34,28 @@ spring:
 
       # 跨域问题解决方案（一）：配置允许请求跨域
       # 全局的跨域配置
-#      globalcors:
-#        # 解决options请求被拦截问题
-#        add-to-simple-url-handler-mapping: true
-#        cors-configurations:
-#          # 拦截的请求
-#          '[/**]':
-#            # 允许跨域的请求
-#            #allowedOrigins: "*" # spring boot2.4以前的配置
-#            allowedOriginPatterns: "*" # spring boot2.4以后的配置
-#            # 允许请求中携带的头信息
-#            allowedHeaders: "*"
-#            # 运行跨域的请求方式
-#            allowedMethods: "*"
-#            # 是否允许携带cookie
-#            # alloweCredentials: true
-#            # 跨域检测的有效期,单位s
-#            maxAge: 36000
-#        default-filters:
-#          - DedupeResponseHeader=Vary
-#          - Access-Control-Allow-Credentials=true
+      #      globalcors:
+      #        # 解决options请求被拦截问题
+      #        add-to-simple-url-handler-mapping: true
+      #        cors-configurations:
+      #          # 拦截的请求
+      #          '[/**]':
+      #            # 允许跨域的请求
+      #            #allowedOrigins: "*" # spring boot2.4以前的配置
+      #            allowedOriginPatterns: "*" # spring boot2.4以后的配置
+      #            # 允许请求中携带的头信息
+      #            allowedHeaders: "*"
+      #            # 运行跨域的请求方式
+      #            allowedMethods: "*"
+      #            # 是否允许携带cookie
+      #            # alloweCredentials: true
+      #            # 跨域检测的有效期,单位s
+      #            maxAge: 36000
+      #        default-filters:
+      #          - DedupeResponseHeader=Vary
+      #          - Access-Control-Allow-Credentials=true
 
       # 跨域问题解决方案（二）：Nginx统一域
-
+logging:
+  level:
+    com.wwd: debug

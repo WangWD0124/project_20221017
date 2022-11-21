@@ -44,4 +44,10 @@ public class AttrGroupDTO implements Serializable {
 	@ApiModelProperty(value = "分类路径")
 	private Long[] catelogPath;
 
+	/**
+	 * 包含属性
+	 */
+	@ApiModelProperty(value = "包含属性")
+	private List<AttrDTO> attrs;
+
 }

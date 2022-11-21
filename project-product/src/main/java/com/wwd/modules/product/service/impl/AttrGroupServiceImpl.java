@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wwd.common.page.PageData;
 import com.wwd.common.service.impl.CrudServiceImpl;
+import com.wwd.common.utils.ConvertUtils;
 import com.wwd.modules.product.dao.AttrGroupDao;
 import com.wwd.modules.product.dto.AttrGroupDTO;
 import com.wwd.modules.product.entity.AttrGroupEntity;
@@ -15,6 +16,7 @@ import com.wwd.modules.product.service.AttrGroupService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,5 +53,15 @@ public class AttrGroupServiceImpl extends CrudServiceImpl<AttrGroupDao, AttrGrou
         }
         IPage<AttrGroupEntity> page = baseDao.selectPage(getPage(params, null, true), wrapper);
         return getPageData(page, currentDtoClass());
+    }
+
+    @Override
+    public List<AttrGroupDTO> listWithAttrByCatelog_id(Long catelog_id) {
+
+        LambdaQueryWrapper<AttrGroupEntity> wrapper = new LambdaQueryWrapper<AttrGroupEntity>();
+        wrapper.eq(AttrGroupEntity::getCatelogId, catelog_id);
+        List<AttrGroupEntity> attrGroupEntities = baseDao.selectList(wrapper);
+        List<AttrGroupDTO> attrGroupDTOS = ConvertUtils.sourceToTarget(attrGroupEntities, AttrGroupDTO.class);
+        return attrGroupDTOS;
     }
 }

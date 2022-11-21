@@ -64,7 +64,7 @@ public class SpuInfoController {
         return new Result<SpuInfoDTO>().ok(data);
     }
 
-    @PostMapping
+    @PostMapping("save")
     @ApiOperation("保存")
     @LogOperation("保存")
     @RequiresPermissions("product:spuinfo:save")

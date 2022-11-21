@@ -46,5 +46,12 @@ public class AttrDTO implements Serializable {
 	@ApiModelProperty(value = "快速展示【是否展示在介绍上；0-否 1-是】，在sku中仍然可以调整")
 	private Integer showDesc;
 
+	/**
+	 * 分类路径（用于修改页面渲染，数据库不存在字段）
+	 */
+	@ApiModelProperty(value = "分类路径")
+	private Long[] catelogPath;
 
+	@ApiModelProperty(value = "所属分组")
+	private Long attrGroupId;
 }

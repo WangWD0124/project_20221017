@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wwd.common.page.PageData;
 import com.wwd.common.service.impl.CrudServiceImpl;
+import com.wwd.common.utils.ConvertUtils;
 import com.wwd.modules.product.dao.AttrDao;
 import com.wwd.modules.product.dto.AttrDTO;
 import com.wwd.modules.product.entity.AttrEntity;
@@ -12,6 +13,7 @@ import com.wwd.modules.product.service.AttrService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,5 +50,22 @@ public class AttrServiceImpl extends CrudServiceImpl<AttrDao, AttrEntity, AttrDT
         }
         IPage<AttrEntity> page = baseDao.selectPage(getPage(params, null, true), wrapper);
         return getPageData(page, currentDtoClass());
+    }
+
+    @Override
+    public List<AttrDTO> list(String attrType, Long catelog_id) {
+        LambdaQueryWrapper<AttrEntity> wrapper = new LambdaQueryWrapper();
+        wrapper.eq(AttrEntity::getAttrType, attrType);//查询规格属性或销售属性
+        if (catelog_id != 0){
+            wrapper.eq(AttrEntity::getCatelogId, catelog_id);
+        }
+        return ConvertUtils.sourceToTarget(baseDao.selectList(wrapper), AttrDTO.class);
+
+    }
+
+    @Override
+    public List<AttrDTO> getByAttrGroupId(Long attrGroupId) {
+
+        return ConvertUtils.sourceToTarget(baseDao.getByAttrGroupId(attrGroupId), AttrDTO.class);
     }
 }

@@ -5,6 +5,7 @@ import com.wwd.common.service.CrudService;
 import com.wwd.modules.product.dto.AttrDTO;
 import com.wwd.modules.product.entity.AttrEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,4 +17,8 @@ import java.util.Map;
 public interface AttrService extends CrudService<AttrEntity, AttrDTO> {
 
     PageData<AttrDTO> page(Map<String, Object> params, String attrType, Long catelog_id);
+
+    List<AttrDTO> list(String attrType, Long catelog_id);
+
+    List<AttrDTO> getByAttrGroupId(Long attrGroupId);
 }

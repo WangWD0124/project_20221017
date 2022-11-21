@@ -12,4 +12,7 @@ import com.wwd.modules.product.entity.AttrAttrgroupRelationEntity;
  */
 public interface AttrAttrgroupRelationService extends CrudService<AttrAttrgroupRelationEntity, AttrAttrgroupRelationDTO> {
 
+    Long findAttrGroupId(Long attrId);
+
+    AttrAttrgroupRelationDTO getByAttrId(Long attrId);
 }

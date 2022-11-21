@@ -10,5 +10,9 @@
         <result property="attrSort" column="attr_sort"/>
     </resultMap>
 
+    <select id="getAttrGroupIdByAttrId" resultType="Long">
+        select attr_group_id from pms_attr_attrgroup_relation where attr_id = #{value}
+    </select>
+
 
 </mapper>

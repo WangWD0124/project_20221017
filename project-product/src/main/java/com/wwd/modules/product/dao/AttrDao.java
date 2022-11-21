@@ -4,6 +4,10 @@ import com.wwd.common.dao.BaseDao;
 import com.wwd.modules.product.entity.AttrEntity;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * 商品属性
  *
@@ -12,5 +16,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface AttrDao extends BaseDao<AttrEntity> {
-	
+
+    List<AttrEntity> getByAttrGroupId(Long attr_group_id);
 }
