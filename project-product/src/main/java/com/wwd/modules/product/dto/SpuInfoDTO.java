@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * spu信息
@@ -46,6 +47,24 @@ public class SpuInfoDTO implements Serializable {
 
 	@ApiModelProperty(value = "")
 	private Date updateTime;
+
+	/**
+	 * 接收spu和sku其他信息
+	 */
+	@ApiModelProperty(value = "积分、成长值")
+	private SpuBoundsDTO bounds;
+
+	@ApiModelProperty(value = "商品详情图集")
+	private List<String> decript;
+
+	@ApiModelProperty(value = "商品图集")
+	private List<String> images;
+
+	@ApiModelProperty(value = "基本属性")
+	private List<ProductAttrValueDTO> baseAttrs;
+
+	@ApiModelProperty(value = "所有sku信息")
+	private List<SkuInfoDTO> skus;
 
 
 }

@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * sku信息
@@ -52,6 +53,12 @@ public class SkuInfoDTO implements Serializable {
 
 	@ApiModelProperty(value = "销量")
 	private Long saleCount;
+
+	/**
+	 * 图片集
+	 */
+	@ApiModelProperty(value = "图片集")
+	private List<SkuImagesDTO> images;
 
 
 }

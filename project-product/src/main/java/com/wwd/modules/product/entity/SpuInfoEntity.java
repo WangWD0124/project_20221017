@@ -1,6 +1,9 @@
 package com.wwd.modules.product.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -19,6 +22,7 @@ public class SpuInfoEntity {
     /**
      * 商品id
      */
+    @TableId(type = IdType.AUTO)
 	private Long id;
     /**
      * 商品名称
@@ -52,4 +56,12 @@ public class SpuInfoEntity {
      * 
      */
 	private Date updateTime;
+    /**
+     * 积分
+     */
+    private int buyBounds;
+    /**
+     * 成长值
+     */
+    private int growBounds;
 }
