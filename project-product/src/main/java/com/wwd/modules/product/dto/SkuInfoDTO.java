@@ -60,5 +60,14 @@ public class SkuInfoDTO implements Serializable {
 	@ApiModelProperty(value = "图片集")
 	private List<SkuImagesDTO> images;
 
+	/**
+	 * sku属性及其值
+	 */
+	@ApiModelProperty(value = "sku属性及其值")
+	private List<SkuSaleAttrValueDTO> attr;
+
+	/**
+	 * sku属性及其值
+	 */
 
 }

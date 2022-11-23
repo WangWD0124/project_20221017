@@ -1,5 +1,6 @@
 package com.wwd.modules.product.dto;
 
+import com.wwd.common.feign.dto.SpuBoundsDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

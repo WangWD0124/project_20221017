@@ -2,6 +2,7 @@ package com.wwd.modules.product.controller;
 
 import com.wwd.common.annotation.LogOperation;
 import com.wwd.common.constant.Constant;
+import com.wwd.common.feign.dto.SpuBoundsDTO;
 import com.wwd.common.page.PageData;
 import com.wwd.common.utils.ConvertUtils;
 import com.wwd.common.utils.ExcelUtils;
@@ -15,6 +16,7 @@ import com.wwd.modules.product.dto.*;
 import com.wwd.modules.product.entity.ProductAttrValueEntity;
 import com.wwd.modules.product.entity.SpuImagesEntity;
 import com.wwd.modules.product.excel.SpuInfoExcel;
+import com.wwd.modules.product.feign.CouponFeignService;
 import com.wwd.modules.product.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -54,6 +56,12 @@ public class SpuInfoController {
     private ProductAttrValueService productAttrValueService;
     @Autowired
     private SkuInfoService skuInfoService;
+    @Autowired
+    private SkuImagesService skuImagesService;
+    @Autowired
+    private SkuSaleAttrValueService skuSaleAttrValueService;
+    @Autowired
+    private CouponFeignService couponFeignService;
 
 
     @GetMapping("page")
@@ -96,7 +104,7 @@ public class SpuInfoController {
         //保存 积分、成长值 至 sms_spu_bounds（coupon服务）pms_spu_info_desc
         SpuBoundsDTO spuBoundsDTO = dto.getBounds();
         spuBoundsDTO.setSpuId(dto.getId());//关联
-        spuInfoDescService.save(spuInfoDescDTO);
+        couponFeignService.save(spuBoundsDTO);
 
         //保存 商品详情图集 至
         SpuInfoDescDTO spuInfoDescDTO = new SpuInfoDescDTO();
@@ -113,7 +121,7 @@ public class SpuInfoController {
         }).collect(Collectors.toList());
         spuImagesService.insertBatch(spuImagesDTOList);//TODO 值得学习总结！(熟悉各层接口提供的CRUD方法）
 
-        //保存 基本属性对应值 至 pms_product_attr_value
+        //批量保存 基本属性对应值 至 pms_product_attr_value
         List<ProductAttrValueEntity> productAttrValueEntities = dto.getBaseAttrs().stream().map(productAttrValueDTO -> {
             productAttrValueDTO.setSpuId(dto.getId());
             return ConvertUtils.sourceToTarget(productAttrValueDTO, ProductAttrValueEntity.class);
@@ -122,15 +130,20 @@ public class SpuInfoController {
 
         //保存 所有sku信息 至 pms_sku_info
         List<SkuInfoDTO> skuInfoDTOList = dto.getSkus();
-        if (skuInfoDTOList != null && skuInfoDTOList.size() > 0){
+        if (skuInfoDTOList != null && skuInfoDTOList.size() > 0) {
             skuInfoDTOList.forEach(skuInfoDTO -> {
                 String skuDefaultImg = "";
-                for (SkuImagesDTO skuImagesDTO : skuInfoDTO.getImages()){
-
-                    if (skuImagesDTO.getDefaultImg() == 1){
+                for (SkuImagesDTO skuImagesDTO : skuInfoDTO.getImages()) {
+                    //保存 sku图片集 至 pms_sku_images
+                    skuImagesService.save(skuImagesDTO);
+                    if (skuImagesDTO.getDefaultImg() == 1) {
                         skuDefaultImg = skuImagesDTO.getImgUrl();
                         break;
                     }
+                }
+                for (SkuSaleAttrValueDTO skuSaleAttrValueDTO : skuInfoDTO.getAttr()) {
+                    //保存 sku属性及其值 至 pms_sku_sale_attr_value
+                    skuSaleAttrValueService.save(skuSaleAttrValueDTO);
                 }
                 skuInfoDTO.setSkuDefaultImg(skuDefaultImg);//遍历找出sku图片集默认图片
                 skuInfoDTO.setSaleCount(0L);//初始销量0
@@ -139,15 +152,7 @@ public class SpuInfoController {
                 skuInfoDTO.setBrandId(dto.getBrandId());
                 skuInfoService.save(skuInfoDTO);
             });
-
-        dto.getSkus();
-
-
-        for (SkuInfoDTO skuInfoDTO : skuInfoDTOList){
-
-
         }
-        //TODO 完善sku属性值保存
 
         return new Result();
     }

@@ -1,4 +1,4 @@
-package com.wwd.modules.product.dto;
+package com.wwd.common.feign.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

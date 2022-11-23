@@ -56,12 +56,4 @@ public class SpuInfoEntity {
      * 
      */
 	private Date updateTime;
-    /**
-     * 积分
-     */
-    private int buyBounds;
-    /**
-     * 成长值
-     */
-    private int growBounds;
 }
