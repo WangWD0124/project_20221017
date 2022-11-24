@@ -1,7 +1,7 @@
 package com.wwd.modules.coupon.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.wwd.common.feign.dto.SpuBoundsDTO;
+import com.wwd.common.feign.dto.coupon.SpuBoundsDTO;
 import com.wwd.common.service.impl.CrudServiceImpl;
 import com.wwd.modules.coupon.dao.SpuBoundsDao;
 import com.wwd.modules.coupon.entity.SpuBoundsEntity;

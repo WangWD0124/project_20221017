@@ -54,6 +54,15 @@ public class MemberLevelController {
         return new Result<PageData<MemberLevelDTO>>().ok(page);
     }
 
+    @GetMapping("list")
+    @ApiOperation("列表")
+    //@RequiresPermissions("menber:memberlevel:page")
+    public Result<List<MemberLevelDTO>> list(){
+        List<MemberLevelDTO> list = memberLevelService.list();
+
+        return new Result<List<MemberLevelDTO>>().ok(list);
+    }
+
     @GetMapping("{id}")
     @ApiOperation("信息")
     //@RequiresPermissions("menber:memberlevel:info")

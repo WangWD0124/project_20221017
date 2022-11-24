@@ -2,6 +2,7 @@ package com.wwd.modules.coupon.controller;
 
 import com.wwd.common.annotation.LogOperation;
 import com.wwd.common.constant.Constant;
+import com.wwd.common.feign.dto.coupon.SkuLadderDTO;
 import com.wwd.common.page.PageData;
 import com.wwd.common.utils.ExcelUtils;
 import com.wwd.common.utils.Result;
@@ -10,7 +11,6 @@ import com.wwd.common.validator.ValidatorUtils;
 import com.wwd.common.validator.group.AddGroup;
 import com.wwd.common.validator.group.DefaultGroup;
 import com.wwd.common.validator.group.UpdateGroup;
-import com.wwd.modules.coupon.dto.SkuLadderDTO;
 import com.wwd.modules.coupon.excel.SkuLadderExcel;
 import com.wwd.modules.coupon.service.SkuLadderService;
 import io.swagger.annotations.Api;

@@ -1,6 +1,6 @@
 package com.wwd.modules.product.dto;
 
-import com.wwd.common.feign.dto.SpuBoundsDTO;
+import com.wwd.common.feign.dto.coupon.SpuBoundsDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -50,11 +50,8 @@ public class SpuInfoDTO implements Serializable {
 	private Date updateTime;
 
 	/**
-	 * 接收spu和sku其他信息
+	 * 接收spu其他信息sku信息
 	 */
-	@ApiModelProperty(value = "积分、成长值")
-	private SpuBoundsDTO bounds;
-
 	@ApiModelProperty(value = "商品详情图集")
 	private List<String> decript;
 
@@ -67,5 +64,9 @@ public class SpuInfoDTO implements Serializable {
 	@ApiModelProperty(value = "所有sku信息")
 	private List<SkuInfoDTO> skus;
 
-
+	/**
+	 * 接收coupon其他信息
+	 */
+	@ApiModelProperty(value = "积分、成长值")
+	private SpuBoundsDTO bounds;
 }

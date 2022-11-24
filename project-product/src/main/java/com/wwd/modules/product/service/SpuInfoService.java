@@ -1,8 +1,11 @@
 package com.wwd.modules.product.service;
 
+import com.wwd.common.page.PageData;
 import com.wwd.common.service.CrudService;
 import com.wwd.modules.product.dto.SpuInfoDTO;
 import com.wwd.modules.product.entity.SpuInfoEntity;
+
+import java.util.Map;
 
 /**
  * spu信息
@@ -12,4 +15,5 @@ import com.wwd.modules.product.entity.SpuInfoEntity;
  */
 public interface SpuInfoService extends CrudService<SpuInfoEntity, SpuInfoDTO> {
 
+    PageData<SpuInfoDTO> search(Map<String, Object> params);
 }

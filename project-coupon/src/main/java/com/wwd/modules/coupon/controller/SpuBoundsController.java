@@ -2,7 +2,7 @@ package com.wwd.modules.coupon.controller;
 
 import com.wwd.common.annotation.LogOperation;
 import com.wwd.common.constant.Constant;
-import com.wwd.common.feign.dto.SpuBoundsDTO;
+import com.wwd.common.feign.dto.coupon.SpuBoundsDTO;
 import com.wwd.common.page.PageData;
 import com.wwd.common.utils.ExcelUtils;
 import com.wwd.common.utils.Result;

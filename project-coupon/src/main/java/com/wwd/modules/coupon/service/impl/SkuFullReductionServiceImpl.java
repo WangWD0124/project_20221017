@@ -1,9 +1,9 @@
 package com.wwd.modules.coupon.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.wwd.common.feign.dto.coupon.SkuFullReductionDTO;
 import com.wwd.common.service.impl.CrudServiceImpl;
 import com.wwd.modules.coupon.dao.SkuFullReductionDao;
-import com.wwd.modules.coupon.dto.SkuFullReductionDTO;
 import com.wwd.modules.coupon.entity.SkuFullReductionEntity;
 import com.wwd.modules.coupon.service.SkuFullReductionService;
 import org.apache.commons.lang3.StringUtils;

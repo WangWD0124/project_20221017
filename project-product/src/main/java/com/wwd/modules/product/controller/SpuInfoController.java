@@ -2,7 +2,10 @@ package com.wwd.modules.product.controller;
 
 import com.wwd.common.annotation.LogOperation;
 import com.wwd.common.constant.Constant;
-import com.wwd.common.feign.dto.SpuBoundsDTO;
+import com.wwd.common.feign.dto.coupon.MemberPriceDTO;
+import com.wwd.common.feign.dto.coupon.SkuFullReductionDTO;
+import com.wwd.common.feign.dto.coupon.SkuLadderDTO;
+import com.wwd.common.feign.dto.coupon.SpuBoundsDTO;
 import com.wwd.common.page.PageData;
 import com.wwd.common.utils.ConvertUtils;
 import com.wwd.common.utils.ExcelUtils;
@@ -29,13 +32,14 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
+//TODO 高级部分完成事务管理
 /**
  * spu信息
  *
@@ -79,6 +83,21 @@ public class SpuInfoController {
         return new Result<PageData<SpuInfoDTO>>().ok(page);
     }
 
+    @GetMapping("page/search")
+    @ApiOperation("分页")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = Constant.PAGE, value = "当前页码，从1开始", paramType = "query", required = true, dataType="int") ,
+            @ApiImplicitParam(name = Constant.LIMIT, value = "每页显示记录数", paramType = "query",required = true, dataType="int") ,
+            @ApiImplicitParam(name = Constant.ORDER_FIELD, value = "排序字段", paramType = "query", dataType="String") ,
+            @ApiImplicitParam(name = Constant.ORDER, value = "排序方式，可选值(asc、desc)", paramType = "query", dataType="String")
+    })
+    @RequiresPermissions("product:spuinfo:page")
+    public Result<PageData<SpuInfoDTO>> search(@ApiIgnore @RequestParam Map<String, Object> params){
+        PageData<SpuInfoDTO> page = spuInfoService.search(params);
+
+        return new Result<PageData<SpuInfoDTO>>().ok(page);
+    }
+
     @GetMapping("{id}")
     @ApiOperation("信息")
     @RequiresPermissions("product:spuinfo:info")
@@ -101,18 +120,18 @@ public class SpuInfoController {
         dto.setUpdateTime(new Date());
         spuInfoService.save(dto);
 
-        //保存 积分、成长值 至 sms_spu_bounds（coupon服务）pms_spu_info_desc
+        //保存 积分、成长值 至 sms_spu_bounds（coupon服务）
         SpuBoundsDTO spuBoundsDTO = dto.getBounds();
         spuBoundsDTO.setSpuId(dto.getId());//关联
         couponFeignService.save(spuBoundsDTO);
 
-        //保存 商品详情图集 至
+        //保存 商品详情图集 至 pms_spu_info_desc
         SpuInfoDescDTO spuInfoDescDTO = new SpuInfoDescDTO();
         spuInfoDescDTO.setSpuId(dto.getId());
         spuInfoDescDTO.setDecript(StringUtils.join(dto.getDecript(),","));//列表转换成逗号隔开的字符串
         spuInfoDescService.save(spuInfoDescDTO);
 
-        //批量保存 商品图集 至 pms_spu_images
+        //批量保存 商品图集 至 pms_spu_images//TODO 前端图片上传问题
         List<SpuImagesEntity> spuImagesDTOList = dto.getImages().stream().map(img -> {
             SpuImagesEntity spuImagesEntity = new SpuImagesEntity();
             spuImagesEntity.setSpuId(dto.getId());//关联
@@ -128,22 +147,19 @@ public class SpuInfoController {
         }).collect(Collectors.toList());
         productAttrValueService.insertBatch(productAttrValueEntities);
 
-        //保存 所有sku信息 至 pms_sku_info
+        //保存 所有sku信息 主要部分至 pms_sku_info
         List<SkuInfoDTO> skuInfoDTOList = dto.getSkus();
         if (skuInfoDTOList != null && skuInfoDTOList.size() > 0) {
             skuInfoDTOList.forEach(skuInfoDTO -> {
                 String skuDefaultImg = "";
                 for (SkuImagesDTO skuImagesDTO : skuInfoDTO.getImages()) {
                     //保存 sku图片集 至 pms_sku_images
+                    skuImagesDTO.setSkuId(skuInfoDTO.getSkuId());//TODO 前端图片上传问题
                     skuImagesService.save(skuImagesDTO);
                     if (skuImagesDTO.getDefaultImg() == 1) {
                         skuDefaultImg = skuImagesDTO.getImgUrl();
                         break;
                     }
-                }
-                for (SkuSaleAttrValueDTO skuSaleAttrValueDTO : skuInfoDTO.getAttr()) {
-                    //保存 sku属性及其值 至 pms_sku_sale_attr_value
-                    skuSaleAttrValueService.save(skuSaleAttrValueDTO);
                 }
                 skuInfoDTO.setSkuDefaultImg(skuDefaultImg);//遍历找出sku图片集默认图片
                 skuInfoDTO.setSaleCount(0L);//初始销量0
@@ -151,6 +167,41 @@ public class SpuInfoController {
                 skuInfoDTO.setCatalogId(dto.getCatalogId());
                 skuInfoDTO.setBrandId(dto.getBrandId());
                 skuInfoService.save(skuInfoDTO);
+
+                //保存 sku属性及其值 至 pms_sku_sale_attr_value
+                for (SkuSaleAttrValueDTO skuSaleAttrValueDTO : skuInfoDTO.getAttr()) {
+                    skuSaleAttrValueDTO.setSkuId(skuInfoDTO.getSkuId());
+                    skuSaleAttrValueService.save(skuSaleAttrValueDTO);
+                }
+
+                //保存满几件打折 至 sms_sku_ladder（coupon服务）
+                if (skuInfoDTO.getFullCount() > 0){ //有效信息才保存
+                    SkuLadderDTO skuLadderDTO = new SkuLadderDTO();
+                    skuLadderDTO.setSkuId(skuInfoDTO.getSkuId());
+                    skuLadderDTO.setFullCount(skuInfoDTO.getFullCount());
+                    skuLadderDTO.setDiscount(skuInfoDTO.getDiscount());
+                    skuLadderDTO.setAddOther(skuInfoDTO.getCountStatus());
+                    couponFeignService.save(skuLadderDTO);
+                }
+
+                //保存满几件打折 至 sms_sku_ladder（coupon服务）
+                if (skuInfoDTO.getFullPrice().compareTo(new BigDecimal("0")) == 1){
+                    SkuFullReductionDTO skuFullReductionDTO = new SkuFullReductionDTO();
+                    skuFullReductionDTO.setSkuId(skuInfoDTO.getSkuId());
+                    skuFullReductionDTO.setFullPrice(skuInfoDTO.getFullPrice());
+                    skuFullReductionDTO.setReducePrice(skuInfoDTO.getReducePrice());
+                    skuFullReductionDTO.setAddOther(skuInfoDTO.getFullCount());
+                    couponFeignService.save(skuFullReductionDTO);
+                }
+
+                //保存会员价 至 sms_member_price（coupon服务）
+                for (MemberPriceDTO memberPriceDTO : skuInfoDTO.getMemberPrice()) {
+                    if (memberPriceDTO.getMemberPrice().compareTo(new BigDecimal("0")) >  0){
+                        memberPriceDTO.setSkuId(skuInfoDTO.getSkuId());
+                        couponFeignService.save(memberPriceDTO);
+                    }
+                }
+
             });
         }
 

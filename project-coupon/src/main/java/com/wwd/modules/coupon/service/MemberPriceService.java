@@ -1,7 +1,7 @@
 package com.wwd.modules.coupon.service;
 
+import com.wwd.common.feign.dto.coupon.MemberPriceDTO;
 import com.wwd.common.service.CrudService;
-import com.wwd.modules.coupon.dto.MemberPriceDTO;
 import com.wwd.modules.coupon.entity.MemberPriceEntity;
 
 /**

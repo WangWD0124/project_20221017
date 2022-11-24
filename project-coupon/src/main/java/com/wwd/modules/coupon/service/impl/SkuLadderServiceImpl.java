@@ -1,9 +1,9 @@
 package com.wwd.modules.coupon.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.wwd.common.feign.dto.coupon.SkuLadderDTO;
 import com.wwd.common.service.impl.CrudServiceImpl;
 import com.wwd.modules.coupon.dao.SkuLadderDao;
-import com.wwd.modules.coupon.dto.SkuLadderDTO;
 import com.wwd.modules.coupon.entity.SkuLadderEntity;
 import com.wwd.modules.coupon.service.SkuLadderService;
 import org.apache.commons.lang3.StringUtils;

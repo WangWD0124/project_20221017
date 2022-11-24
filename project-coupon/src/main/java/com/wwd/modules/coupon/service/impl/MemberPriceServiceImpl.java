@@ -1,9 +1,9 @@
 package com.wwd.modules.coupon.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.wwd.common.feign.dto.coupon.MemberPriceDTO;
 import com.wwd.common.service.impl.CrudServiceImpl;
 import com.wwd.modules.coupon.dao.MemberPriceDao;
-import com.wwd.modules.coupon.dto.MemberPriceDTO;
 import com.wwd.modules.coupon.entity.MemberPriceEntity;
 import com.wwd.modules.coupon.service.MemberPriceService;
 import org.apache.commons.lang3.StringUtils;

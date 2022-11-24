@@ -1,5 +1,6 @@
 package com.wwd.modules.product.dto;
 
+import com.wwd.common.feign.dto.coupon.MemberPriceDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -61,13 +62,39 @@ public class SkuInfoDTO implements Serializable {
 	private List<SkuImagesDTO> images;
 
 	/**
-	 * sku属性及其值
+	 * sku属性列表及其值
 	 */
 	@ApiModelProperty(value = "sku属性及其值")
 	private List<SkuSaleAttrValueDTO> attr;
 
 	/**
-	 * sku属性及其值
+	 * sku中满几件打折
 	 */
+	@ApiModelProperty(value = "满几件")
+	private Integer fullCount;
+
+	@ApiModelProperty(value = "打几折")
+	private BigDecimal discount;
+
+	@ApiModelProperty(value = "是否叠加其他优惠[0-不可叠加，1-可叠加]")
+	private Integer countStatus; //addOther
+
+	/**
+	 * sku中满减
+	 */
+	@ApiModelProperty(value = "满多少")
+	private BigDecimal fullPrice;
+
+	@ApiModelProperty(value = "减多少")
+	private BigDecimal reducePrice;
+
+	@ApiModelProperty(value = "是否参与其他优惠")
+	private Integer priceStatus; //addOther
+
+	/**
+	 * 会员价
+	 */
+	@ApiModelProperty(value = "会员价")
+	private List<MemberPriceDTO> memberPrice;
 
 }

@@ -1,7 +1,7 @@
 package com.wwd.modules.coupon.service;
 
+import com.wwd.common.feign.dto.coupon.SkuLadderDTO;
 import com.wwd.common.service.CrudService;
-import com.wwd.modules.coupon.dto.SkuLadderDTO;
 import com.wwd.modules.coupon.entity.SkuLadderEntity;
 
 /**

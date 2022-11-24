@@ -1,6 +1,6 @@
 package com.wwd.modules.coupon.service;
 
-import com.wwd.common.feign.dto.SpuBoundsDTO;
+import com.wwd.common.feign.dto.coupon.SpuBoundsDTO;
 import com.wwd.common.service.CrudService;
 import com.wwd.modules.coupon.entity.SpuBoundsEntity;
 

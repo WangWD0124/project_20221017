@@ -1,12 +1,10 @@
-package com.wwd.modules.coupon.dto;
+package com.wwd.common.feign.dto.coupon;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
-
 import java.math.BigDecimal;
 
 /**

@@ -2,6 +2,7 @@ package com.wwd.modules.member.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wwd.common.service.impl.CrudServiceImpl;
+import com.wwd.common.utils.ConvertUtils;
 import com.wwd.modules.member.dao.MemberLevelDao;
 import com.wwd.modules.member.dto.MemberLevelDTO;
 import com.wwd.modules.member.entity.MemberLevelEntity;
@@ -9,6 +10,7 @@ import com.wwd.modules.member.service.MemberLevelService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,4 +33,8 @@ public class MemberLevelServiceImpl extends CrudServiceImpl<MemberLevelDao, Memb
     }
 
 
+    @Override
+    public List<MemberLevelDTO> list() {
+        return ConvertUtils.sourceToTarget(baseDao.selectList(null), MemberLevelDTO.class);
+    }
 }
