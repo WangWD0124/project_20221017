@@ -55,6 +55,21 @@ public class SkuInfoController {
         return new Result<PageData<SkuInfoDTO>>().ok(page);
     }
 
+    @GetMapping("page/search")
+    @ApiOperation("分页查询")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = Constant.PAGE, value = "当前页码，从1开始", paramType = "query", required = true, dataType="int") ,
+            @ApiImplicitParam(name = Constant.LIMIT, value = "每页显示记录数", paramType = "query",required = true, dataType="int") ,
+            @ApiImplicitParam(name = Constant.ORDER_FIELD, value = "排序字段", paramType = "query", dataType="String") ,
+            @ApiImplicitParam(name = Constant.ORDER, value = "排序方式，可选值(asc、desc)", paramType = "query", dataType="String")
+    })
+    @RequiresPermissions("product:skuinfo:search")
+    public Result<PageData<SkuInfoDTO>> search(@ApiIgnore @RequestParam Map<String, Object> params){
+        PageData<SkuInfoDTO> page = skuInfoService.search(params);
+
+        return new Result<PageData<SkuInfoDTO>>().ok(page);
+    }
+
     @GetMapping("{id}")
     @ApiOperation("信息")
     @RequiresPermissions("product:skuinfo:info")

@@ -13,5 +13,7 @@ spring:
       discovery:
         namespace: dev666
         group: DEFAULT_GROUP # m默认可不写
-
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
 

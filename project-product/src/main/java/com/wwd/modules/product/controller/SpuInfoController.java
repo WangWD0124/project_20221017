@@ -84,7 +84,7 @@ public class SpuInfoController {
     }
 
     @GetMapping("page/search")
-    @ApiOperation("分页")
+    @ApiOperation("分页查询")
     @ApiImplicitParams({
             @ApiImplicitParam(name = Constant.PAGE, value = "当前页码，从1开始", paramType = "query", required = true, dataType="int") ,
             @ApiImplicitParam(name = Constant.LIMIT, value = "每页显示记录数", paramType = "query",required = true, dataType="int") ,
@@ -208,6 +208,17 @@ public class SpuInfoController {
         return new Result();
     }
 
+    @PostMapping("{id}/up")
+    @ApiOperation("修改-商品上架")
+    @LogOperation("修改-商品上架")
+    @RequiresPermissions("product:spuinfo:productUp")
+    public Result productUp(@PathVariable("id") Long id){
+
+        spuInfoService.updatePublishStatusById(id);
+
+        return new Result();
+    }
+
     @PutMapping
     @ApiOperation("修改")
     @LogOperation("修改")
@@ -222,6 +233,8 @@ public class SpuInfoController {
 
         return new Result();
     }
+
+
 
     @DeleteMapping
     @ApiOperation("删除")

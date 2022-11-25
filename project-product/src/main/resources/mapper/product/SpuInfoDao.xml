@@ -15,5 +15,9 @@
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
+    <update id="updatePublishStatusById">
+        update pms_spu_info set publish_status = 1 where id = #{id}
+    </update>
+
 
 </mapper>

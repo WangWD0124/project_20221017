@@ -16,4 +16,6 @@ import java.util.Map;
 public interface SpuInfoService extends CrudService<SpuInfoEntity, SpuInfoDTO> {
 
     PageData<SpuInfoDTO> search(Map<String, Object> params);
+
+    void updatePublishStatusById(Long id);
 }

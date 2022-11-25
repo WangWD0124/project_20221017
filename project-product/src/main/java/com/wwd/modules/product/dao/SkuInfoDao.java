@@ -12,5 +12,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SkuInfoDao extends BaseDao<SkuInfoEntity> {
-	
+
+    void updatePublishStatusById(Long id);
 }

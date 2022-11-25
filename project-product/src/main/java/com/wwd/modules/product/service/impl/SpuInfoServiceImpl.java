@@ -45,21 +45,26 @@ public class SpuInfoServiceImpl extends CrudServiceImpl<SpuInfoDao, SpuInfoEntit
 
         LambdaQueryWrapper<SpuInfoEntity> wrapper = new LambdaQueryWrapper<>();
 
-        if (catelogId != null){
+        if (!catelogId.equals("0")){
             wrapper.eq(SpuInfoEntity::getCatalogId, catelogId);
         }
-        if (brandId != null){
+        if (!brandId.equals("0")){
             wrapper.eq(SpuInfoEntity::getBrandId, brandId);
         }
-        if (status != null){
-            wrapper.eq(SpuInfoEntity::getPublishStatus, params.get("status"));
+        if (status != null && !status.equals("")){
+            wrapper.eq(SpuInfoEntity::getPublishStatus, status);
         }
-        if (key != null){
-            wrapper.eq(SpuInfoEntity::getId, key)
+        if (key != null && !key.equals("")){
+            wrapper.and(i -> i.eq(SpuInfoEntity::getId, key)
                     .or().like(SpuInfoEntity::getSpuName, key)
-                    .or().like(SpuInfoEntity::getSpuDescription, key);
+                    .or().like(SpuInfoEntity::getSpuDescription, key));
         }
         IPage<SpuInfoEntity> page = baseDao.selectPage(getPage(params, null, true), wrapper);
         return getPageData(page, currentDtoClass());
+    }
+
+    @Override
+    public void updatePublishStatusById(Long id) {
+        baseDao.updatePublishStatusById(id);
     }
 }
