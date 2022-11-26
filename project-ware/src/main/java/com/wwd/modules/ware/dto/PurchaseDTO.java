@@ -20,34 +20,34 @@ import java.math.BigDecimal;
 public class PurchaseDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "采购单id")
 	private Long id;
 
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "采购人id")
 	private Long assigneeId;
 
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "采购人姓名")
 	private String assigneeName;
 
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "联系电话")
 	private String phone;
 
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "优先级")
 	private Integer priority;
 
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "状态")
 	private Integer status;
 
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "仓库id")
 	private Long wareId;
 
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "金额")
 	private BigDecimal amount;
 
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "创建时间")
 	private Date createTime;
 
-	@ApiModelProperty(value = "")
+	@ApiModelProperty(value = "修改时间")
 	private Date updateTime;
 
 

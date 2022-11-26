@@ -55,6 +55,21 @@ public class PurchaseDetailController {
         return new Result<PageData<PurchaseDetailDTO>>().ok(page);
     }
 
+    @GetMapping("page/search")
+    @ApiOperation("分页查询")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = Constant.PAGE, value = "当前页码，从1开始", paramType = "query", required = true, dataType="int") ,
+            @ApiImplicitParam(name = Constant.LIMIT, value = "每页显示记录数", paramType = "query",required = true, dataType="int") ,
+            @ApiImplicitParam(name = Constant.ORDER_FIELD, value = "排序字段", paramType = "query", dataType="String") ,
+            @ApiImplicitParam(name = Constant.ORDER, value = "排序方式，可选值(asc、desc)", paramType = "query", dataType="String")
+    })
+    @RequiresPermissions("ware:purchasedetail:page")
+    public Result<PageData<PurchaseDetailDTO>> search(@ApiIgnore @RequestParam Map<String, Object> params){
+        PageData<PurchaseDetailDTO> page = purchaseDetailService.search(params);
+
+        return new Result<PageData<PurchaseDetailDTO>>().ok(page);
+    }
+
     @GetMapping("{id}")
     @ApiOperation("信息")
     @RequiresPermissions("ware:purchasedetail:info")
@@ -73,6 +88,17 @@ public class PurchaseDetailController {
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
 
         purchaseDetailService.save(dto);
+
+        return new Result();
+    }
+
+    @GetMapping("merge")
+    @ApiOperation("合并")
+    @LogOperation("合并")
+    @RequiresPermissions("ware:purchasedetail:merge")
+    public Result merge(@ApiIgnore @RequestParam Map<String, Object> params){
+
+        purchaseDetailService.merge(params);
 
         return new Result();
     }

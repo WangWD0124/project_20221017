@@ -16,7 +16,7 @@ import java.math.BigDecimal;
  * @since 1.0.0 2022-10-14
  */
 @Data
-@ApiModel(value = "")
+@ApiModel(value = "采购需求")
 public class PurchaseDetailDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
