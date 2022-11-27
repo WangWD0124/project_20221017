@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wwd.common.page.PageData;
 import com.wwd.common.service.impl.CrudServiceImpl;
 import com.wwd.modules.ware.dao.PurchaseDetailDao;
+import com.wwd.modules.ware.dto.PurchaseDTO;
 import com.wwd.modules.ware.dto.PurchaseDetailDTO;
 import com.wwd.modules.ware.entity.PurchaseDetailEntity;
 import com.wwd.modules.ware.service.PurchaseDetailService;
@@ -17,7 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * 
+ *
  *
  * @author wwd 1245436962@qq.com
  * @since 1.0.0 2022-10-14
@@ -59,16 +60,22 @@ public class PurchaseDetailServiceImpl extends CrudServiceImpl<PurchaseDetailDao
     }
 
     @Override
-    public void merge(Map<String, Object> params) {
+    public void merge(List<Long> ids, Long purchaseId) {
 
-        List<Long> ids = (List<Long>) params.get("ids");
-        Long purchaseId = (Long) params.get("purchaseId");
+        //1、判断采购单purchaseId是否存在
+        // 存在：
+        // 1）状态”新建“：修改采购需求purchaseId
+        // 2）状态非”新建“：返回提示是否创建新的采购单，是则创建新的采购单，修改采购需求purchaseId
+        // 不存在：
+        // 1）返回提示是否创建新的采购单，是则创建新的采购单，修改采购需求purchaseId
+
         List<PurchaseDetailEntity> list = ids.stream().map(id -> {
-                    PurchaseDetailEntity purchaseDetailEntity = new PurchaseDetailEntity();
-                    purchaseDetailEntity.setId(id);
-                    purchaseDetailEntity.setPurchaseId(purchaseId);
-                    return purchaseDetailEntity;
-                }).collect(Collectors.toList());
+            PurchaseDetailEntity purchaseDetailEntity = new PurchaseDetailEntity();
+            purchaseDetailEntity.setId(id);
+            purchaseDetailEntity.setPurchaseId(purchaseId);
+            return purchaseDetailEntity;
+        }).collect(Collectors.toList());
         this.updateBatchById(list);//批量修改
+
     }
 }

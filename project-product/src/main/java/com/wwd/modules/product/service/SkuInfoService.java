@@ -15,6 +15,5 @@ import java.util.Map;
  */
 public interface SkuInfoService extends CrudService<SkuInfoEntity, SkuInfoDTO> {
 
-
     PageData<SkuInfoDTO> search(Map<String, Object> params);
 }

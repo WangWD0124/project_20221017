@@ -12,5 +12,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ProductAttrValueDao extends BaseDao<ProductAttrValueEntity> {
-	
+
+    void updateValue(String attrValue, Integer quickShow, Long spuId, Long attrId);
 }

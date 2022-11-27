@@ -13,5 +13,9 @@
         <result property="quickShow" column="quick_show"/>
     </resultMap>
 
+    <update id="updateValue">
+        update set attr_value=#{attr_value}, quick_show=#{quick_show} from pms_product_attr_value where spu_id=#{spu_id} and attr_id=#{attr_id}
+    </update>
+
 
 </mapper>

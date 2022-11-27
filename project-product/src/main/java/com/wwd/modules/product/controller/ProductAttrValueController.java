@@ -3,6 +3,7 @@ package com.wwd.modules.product.controller;
 import com.wwd.common.annotation.LogOperation;
 import com.wwd.common.constant.Constant;
 import com.wwd.common.page.PageData;
+import com.wwd.common.utils.ConvertUtils;
 import com.wwd.common.utils.ExcelUtils;
 import com.wwd.common.utils.Result;
 import com.wwd.common.validator.AssertUtils;
@@ -11,6 +12,7 @@ import com.wwd.common.validator.group.AddGroup;
 import com.wwd.common.validator.group.DefaultGroup;
 import com.wwd.common.validator.group.UpdateGroup;
 import com.wwd.modules.product.dto.ProductAttrValueDTO;
+import com.wwd.modules.product.entity.ProductAttrValueEntity;
 import com.wwd.modules.product.excel.ProductAttrValueExcel;
 import com.wwd.modules.product.service.ProductAttrValueService;
 import io.swagger.annotations.Api;
@@ -55,6 +57,15 @@ public class ProductAttrValueController {
         return new Result<PageData<ProductAttrValueDTO>>().ok(page);
     }
 
+    @GetMapping("list/{spuId}")
+    @ApiOperation("信息")
+    @RequiresPermissions("product:productattrvalue:info")
+    public Result<List<ProductAttrValueDTO>> getBySpuId(@PathVariable("spuId") Long spuId){
+        List<ProductAttrValueDTO> list = productAttrValueService.getBySpuId(spuId);
+
+        return new Result<List<ProductAttrValueDTO>>().ok(list);
+    }
+
     @GetMapping("{id}")
     @ApiOperation("信息")
     @RequiresPermissions("product:productattrvalue:info")
@@ -77,15 +88,15 @@ public class ProductAttrValueController {
         return new Result();
     }
 
-    @PutMapping
+    @PutMapping("{spuId}")
     @ApiOperation("修改")
     @LogOperation("修改")
     @RequiresPermissions("product:productattrvalue:update")
-    public Result update(@RequestBody ProductAttrValueDTO dto){
+    public Result update(@RequestBody List<ProductAttrValueDTO> dtos, @PathVariable("spuId") Long spuId){
         //效验数据
-        ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
+        ValidatorUtils.validateEntity(dtos, UpdateGroup.class, DefaultGroup.class);
 
-        productAttrValueService.update(dto);
+        productAttrValueService.updateValue(dtos, spuId);
 
         return new Result();
     }

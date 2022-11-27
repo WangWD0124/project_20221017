@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +40,46 @@ import java.util.Map;
 public class PurchaseController {
     @Autowired
     private PurchaseService purchaseService;
+
+    enum purchase_ststus {
+        CREATED(0, "新建"),
+        ASSIGNED(1, "已分配"),
+        PURCHASING(2, "正在采购"),
+        COMPLETED(3, "已完成"),
+        PURCHASING_FAILED(4, "采购失败");
+
+        private int code;
+        private String status;
+        purchase_ststus(int code, String status){
+            this.code = code;
+            this.status = status;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public static String StatusString(int code){
+            switch (code){
+                case 0:
+                    return CREATED.getStatus();
+                case 1:
+                    return ASSIGNED.getStatus();
+                case 2:
+                    return PURCHASING.getStatus();
+                case 3:
+                    return COMPLETED.getStatus();
+                case 4:
+                    return PURCHASING_FAILED.getStatus();
+                default:
+                    return null;
+            }
+        }
+    }
 
     @GetMapping("page")
     @ApiOperation("分页")
@@ -71,6 +112,10 @@ public class PurchaseController {
     public Result save(@RequestBody PurchaseDTO dto){
         //效验数据
         ValidatorUtils.validateEntity(dto, AddGroup.class, DefaultGroup.class);
+
+        dto.setCreateTime(new Date());
+
+        dto.setUpdateTime(new Date());
 
         purchaseService.save(dto);
 
