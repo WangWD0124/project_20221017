@@ -9,6 +9,7 @@ import com.wwd.modules.product.dao.SkuInfoDao;
 import com.wwd.modules.product.dto.SkuInfoDTO;
 import com.wwd.modules.product.entity.SkuInfoEntity;
 import com.wwd.modules.product.entity.SpuInfoEntity;
+import com.wwd.modules.product.service.SkuInfoService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 

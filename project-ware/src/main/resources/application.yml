@@ -1,64 +1,5 @@
 ### -----------------------本地配置----------------------------
 
-## -----------------------ribbon负载均衡-----------------------
-# 针对要访问的各个服务设置负载均衡策略
-# NacosRule：
-# 1、先访问同一个集群中的服务实例；如果同集群中没有该服务实例则访问其他集群的，且报警提示；
-# 2、确定服务列表；
-# 3、在列表中采用随机访问策略
-project-product:
-  ribbon:
-    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
-project-menber:
-  ribbon:
-    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
-project-order:
-  ribbon:
-    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
-project-coupon:
-  ribbon:
-    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
-# 针对要访问的各个服务设置负载均衡饥饿加载
-ribbon:
-  eager-load:
-    enabled: true
-    clients:
-      - project-product
-      - project-menber
-      - project-order
-      - project-coupon
-
-### -----------------------feign远程调用-----------------------
-feign:
-  client:
-    config:
-      default: # default全局的配置；或者# 针对某个微服务的配置
-        loggerLevel: BASIC # 日志级别，BASIC就是基本的请求和响应信息
-  httpclient:
-    enabled: true # 开启feign对HttpClient的支持
-    max-connections: 200 # 最大的连接数
-    max-connections-per-route: 50 # 每个路径的最大连接数
-  sentinel:
-    enabled: true # 开启feign对sentinel的支持
-#
-### -----------------------rabbitmq消息队列-----------------------
-#spring:
-#  rabbitmq:
-#    host: localhost #主机名
-#    port: 5672 #端口
-#    username: guest #用户名
-#    password: guest #密码
-#    virtual-host: / #虚拟主机
-#    listener:
-#      direct:
-#        prefetch: 1 # 每次只能获取一条消息，处理完才能获取下一个消息
-#
-### -----------------------sentinel流量控制-----------------------
-#  cloud:
-#    sentinel:
-#      transport:
-#        dashboard: localhost:8090
-
 ## -----------------------mysql数据库-----------------------
 spring:
   datasource:
@@ -96,7 +37,7 @@ spring:
   messages:
     encoding: UTF-8
     basename: i18n/messages
-  mvc:
+  mvc:  # 请求路径与 Spring MVC 处理映射匹配的默认策略已从AntPathMatcher更改为PathPatternParser
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
   servlet:
@@ -104,7 +45,8 @@ spring:
       max-file-size: 100MB
       max-request-size: 100MB
       enabled: true
-  ## -----------------------redis-----------------------
+
+  ## -----------------------redis缓存数据库-----------------------
   redis:
     database: 0
     host: 192.168.145.101
@@ -124,16 +66,12 @@ spring:
         - 192.168.145.101:16380
         - 192.168.145.101:16381
 
-  # 是否开启redis缓存  true开启   false关闭
-  renren:
-    redis:
-      open: true
-
-
-
+# 是否开启redis缓存  true开启   false关闭
+project:
+  redis:
+    open: true
 
 ## -----------------------mybatis-plus配置-----------------------
-#mybatis
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
   #实体扫描，多个package用逗号或者分号分隔
@@ -152,11 +90,52 @@ mybatis-plus:
     cache-enabled: false
     call-setters-on-nulls: true
     jdbc-type-for-null: 'null'
+    # log-impl: org.apache.ibatis.logging.stdout.StdoutImpl 日志
   configuration-properties:
     prefix:
     blobType: BLOB
     boolValue: TRUE
 
+## -----------------------feign远程调用-----------------------
+feign:
+  client:
+    config:
+      default: # default全局的配置；或者# 针对某个微服务的配置
+        loggerLevel: BASIC # 日志级别，BASIC就是基本的请求和响应信息
+  httpclient:
+    enabled: true # 开启feign对HttpClient的支持
+    max-connections: 200 # 最大的连接数
+    max-connections-per-route: 50 # 每个路径的最大连接数
+  sentinel:
+    enabled: true # 开启feign对sentinel的支持
+
+## -----------------------ribbon负载均衡-----------------------
+# 针对要访问的各个服务设置负载均衡策略（一般用默认的负载均衡规则，不做修改）
+# NacosRule同集群优先策略：
+# 1、先访问同一个集群中的服务实例；如果同集群中没有该服务实例则访问其他集群的，且报警提示；
+# 2、确定服务列表；
+# 3、在列表中采用随机访问策略
+project-product:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
+project-menber:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
+project-order:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
+project-coupon:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
+# 针对要访问的各个服务设置负载均衡饥饿加载
+ribbon:
+  eager-load:
+    enabled: true
+    clients:
+      - project-product
+      - project-menber
+      - project-order
+      - project-coupon
 
 ## -----------------------seata配置-----------------------
 seata:
@@ -175,7 +154,24 @@ seata:
       seata-demo: SH
   data-source-proxy-mode: XA  # AT\TCC\Saga @
 
-
+#
+### -----------------------rabbitmq消息队列-----------------------
+#spring:
+#  rabbitmq:
+#    host: localhost #主机名
+#    port: 5672 #端口
+#    username: guest #用户名
+#    password: guest #密码
+#    virtual-host: / #虚拟主机
+#    listener:
+#      direct:
+#        prefetch: 1 # 每次只能获取一条消息，处理完才能获取下一个消息
+#
+### -----------------------sentinel流量控制-----------------------
+#  cloud:
+#    sentinel:
+#      transport:
+#        dashboard: localhost:8090
 logging:
   level:
     com.wwd: debug

@@ -10,12 +10,14 @@
     <description>权限系统</description>
     <url>https://www.renren.io</url>
 
+    <!-- 定义可能涉及的全部第三方依赖，统一配置依赖版本 -->
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.7.4</version>
 	</parent>
 
+    <!-- 子模块 -->
     <modules>
         <module>common</module>
 		<module>dynamic-datasource</module>
@@ -58,6 +60,10 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>

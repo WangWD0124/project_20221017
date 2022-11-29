@@ -136,9 +136,9 @@ public class SpuInfoController {
             SpuImagesEntity spuImagesEntity = new SpuImagesEntity();
             spuImagesEntity.setSpuId(dto.getId());//关联
             spuImagesEntity.setImgUrl(img);
-            return spuImagesEntity;//TODO 值得学习总结！(stream遍历方式）
+            return spuImagesEntity;
         }).collect(Collectors.toList());
-        spuImagesService.insertBatch(spuImagesDTOList);//TODO 值得学习总结！(熟悉各层接口提供的CRUD方法）
+        spuImagesService.insertBatch(spuImagesDTOList);
 
         //批量保存 基本属性对应值 至 pms_product_attr_value
         List<ProductAttrValueEntity> productAttrValueEntities = dto.getBaseAttrs().stream().map(productAttrValueDTO -> {
@@ -228,7 +228,8 @@ public class SpuInfoController {
         ValidatorUtils.validateEntity(dto, UpdateGroup.class, DefaultGroup.class);
 
         //设置修改时间
-        //TODO
+        dto.setUpdateTime(new Date());
+
         spuInfoService.update(dto);
 
         return new Result();

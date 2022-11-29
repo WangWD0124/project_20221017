@@ -30,7 +30,7 @@ public class RedisAspect {
     /**
      * 是否开启redis缓存  true开启   false关闭
      */
-    @Value("${renren.redis.open: false}")
+    @Value("${project.redis.open: false}")
     private boolean open;
 
     @Around("execution(* com.wwd.common.redis.RedisUtils.*(..))")
