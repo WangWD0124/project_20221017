@@ -1,0 +1,19 @@
+server:
+  port: 9901
+#profiles:
+#  active: dev  # 开发、测试、生产环境、test、prop
+spring:
+  application:
+    name: project-search # 服务名称
+  cloud:
+    nacos:
+      server-addr: 192.168.145.101:80 #nginx:80 # nginx反向代理nacos地址
+      config:
+        file-extension: yaml # 文件名后缀
+      discovery:
+        namespace: dev666
+        group: DEFAULT_GROUP # m默认可不写
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
