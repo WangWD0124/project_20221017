@@ -33,7 +33,6 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -208,13 +207,13 @@ public class SpuInfoController {
         return new Result();
     }
 
-    @PostMapping("{id}/up")
+    @PostMapping("{spuId}/up")
     @ApiOperation("修改-商品上架")
     @LogOperation("修改-商品上架")
     @RequiresPermissions("product:spuinfo:productUp")
-    public Result productUp(@PathVariable("id") Long id){
+    public Result productUp(@PathVariable("spuId") Long spuId){
 
-        spuInfoService.updatePublishStatusById(id);
+        spuInfoService.updatePublishStatusById(spuId);
 
         return new Result();
     }

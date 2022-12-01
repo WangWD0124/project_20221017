@@ -2,6 +2,7 @@ package com.wwd.modules.ware.controller;
 
 import com.wwd.common.annotation.LogOperation;
 import com.wwd.common.constant.Constant;
+import com.wwd.common.feign.dto.ware.SkuHasStockVo;
 import com.wwd.common.page.PageData;
 import com.wwd.common.utils.ExcelUtils;
 import com.wwd.common.utils.Result;
@@ -62,6 +63,16 @@ public class WareSkuController {
         WareSkuDTO data = wareSkuService.get(id);
 
         return new Result<WareSkuDTO>().ok(data);
+    }
+
+    @PostMapping("stock")
+    @ApiOperation("库存")
+    @RequiresPermissions("ware:waresku:info")
+    public Result<List<SkuHasStockVo>> getSkuHasStockVoByIds(@RequestBody List<Long> skuIds){
+
+        List<SkuHasStockVo> skuHasStockVos = wareSkuService.getSkuHasStockVoByIds(skuIds);
+
+        return new Result<List<SkuHasStockVo>>().ok(skuHasStockVos);
     }
 
     @PostMapping

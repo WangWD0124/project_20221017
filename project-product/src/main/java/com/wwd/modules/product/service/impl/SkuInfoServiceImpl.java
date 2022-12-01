@@ -13,6 +13,7 @@ import com.wwd.modules.product.service.SkuInfoService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,5 +64,13 @@ public class SkuInfoServiceImpl extends CrudServiceImpl<SkuInfoDao, SkuInfoEntit
         }
         IPage<SkuInfoEntity> page = baseDao.selectPage(getPage(params, null, true), wrapper);
         return getPageData(page, currentDtoClass());
+    }
+
+    @Override
+    public List<SkuInfoEntity> getSkuBySpuId(Long spuId) {
+
+        LambdaQueryWrapper<SkuInfoEntity> wrapper = new LambdaQueryWrapper();
+        wrapper.eq(SkuInfoEntity::getSpuId, spuId);
+        return baseDao.selectList(wrapper);
     }
 }

@@ -23,6 +23,7 @@ import java.util.Map;
 @Service
 public class BrandServiceImpl extends CrudServiceImpl<BrandDao, BrandEntity, BrandDTO> implements BrandService {
 
+
     @Override
     public QueryWrapper<BrandEntity> getWrapper(Map<String, Object> params){
         String id = (String)params.get("id");

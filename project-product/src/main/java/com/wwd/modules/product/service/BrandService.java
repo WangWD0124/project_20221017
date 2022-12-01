@@ -16,4 +16,5 @@ import java.util.Map;
 public interface BrandService extends CrudService<BrandEntity, BrandDTO> {
 
     PageData<BrandDTO> pageByCondition(Map<String, Object> params);
+
 }
