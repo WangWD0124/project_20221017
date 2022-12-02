@@ -33,13 +33,18 @@ public class ProductAttrValueServiceImpl extends CrudServiceImpl<ProductAttrValu
         return wrapper;
     }
 
-
     @Override
     public List<ProductAttrValueDTO> getBySpuId(Long spuId) {
 
         LambdaQueryWrapper<ProductAttrValueEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ProductAttrValueEntity::getSpuId, spuId);
         return ConvertUtils.sourceToTarget(baseDao.selectList(wrapper), ProductAttrValueDTO.class);
+    }
+
+    @Override
+    public List<ProductAttrValueDTO> getBaseAttrEnableSearchBySpuId(Long spuId) {
+
+        return ConvertUtils.sourceToTarget(baseDao.getBaseAttrEnableSearchBySpuId(spuId), ProductAttrValueDTO.class);
     }
 
     @Override

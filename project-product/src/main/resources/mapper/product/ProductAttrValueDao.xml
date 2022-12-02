@@ -17,5 +17,9 @@
         update set attr_value=#{attr_value}, quick_show=#{quick_show} from pms_product_attr_value where spu_id=#{spu_id} and attr_id=#{attr_id}
     </update>
 
+    <select id="getBaseAttrEnableSearchBySpuId" resultType="com.wwd.modules.product.entity.ProductAttrValueEntity">
+        select t1.* from pms_product_attr_value t1 join pms_attr t2 on t1.attr_id=t2.attr_id where t1.spu_id=#{spu_id} and t2.search_type=1
+    </select>
+
 
 </mapper>

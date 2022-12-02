@@ -16,5 +16,7 @@ public interface ProductAttrValueService extends CrudService<ProductAttrValueEnt
 
     List<ProductAttrValueDTO> getBySpuId(Long id);
 
+    List<ProductAttrValueDTO> getBaseAttrEnableSearchBySpuId(Long spuId);
+
     void updateValue(List<ProductAttrValueDTO> sourceToTarget, Long spuId);
 }

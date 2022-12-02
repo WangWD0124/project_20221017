@@ -7,6 +7,7 @@ import com.wwd.common.es.SkuEsModel;
 import com.wwd.common.feign.dto.ware.SkuHasStockVo;
 import com.wwd.common.page.PageData;
 import com.wwd.common.service.impl.CrudServiceImpl;
+import com.wwd.common.utils.Result;
 import com.wwd.modules.product.dao.SpuInfoDao;
 import com.wwd.modules.product.dto.ProductAttrValueDTO;
 import com.wwd.modules.product.dto.SpuInfoDTO;
@@ -14,6 +15,7 @@ import com.wwd.modules.product.entity.BrandEntity;
 import com.wwd.modules.product.entity.ProductAttrValueEntity;
 import com.wwd.modules.product.entity.SkuInfoEntity;
 import com.wwd.modules.product.entity.SpuInfoEntity;
+import com.wwd.modules.product.feign.SearchFeignService;
 import com.wwd.modules.product.feign.WareFeignService;
 import com.wwd.modules.product.service.*;
 import com.wwd.modules.product.service.SkuInfoService;
@@ -46,6 +48,8 @@ public class SpuInfoServiceImpl extends CrudServiceImpl<SpuInfoDao, SpuInfoEntit
     private ProductAttrValueService productAttrValueService;
     @Autowired
     private WareFeignService wareFeignService;
+    @Autowired
+    private SearchFeignService searchFeignService;
 
     @Override
     public QueryWrapper<SpuInfoEntity> getWrapper(Map<String, Object> params){
@@ -89,12 +93,9 @@ public class SpuInfoServiceImpl extends CrudServiceImpl<SpuInfoDao, SpuInfoEntit
     @Override
     public void updatePublishStatusById(Long id) {
 
-        //一、修改spu上架状态
-        baseDao.updatePublishStatusById(id);
-
-        //二、组装传递给ES的数据
+        //一、组装传递给ES的数据
         //1、sku对应的spu的基本属性及其值的列表
-        List<ProductAttrValueDTO> productAttrValueDTOS = productAttrValueService.getBySpuId(id);
+        List<ProductAttrValueDTO> productAttrValueDTOS = productAttrValueService.getBaseAttrEnableSearchBySpuId(id);
         List<SkuEsModel.Attr> attrs = productAttrValueDTOS.stream().map(productAttrValueDTO -> {
             SkuEsModel.Attr attr = new SkuEsModel.Attr();
             attr.setAttrId(productAttrValueDTO.getAttrId());
@@ -137,8 +138,14 @@ public class SpuInfoServiceImpl extends CrudServiceImpl<SpuInfoDao, SpuInfoEntit
             return skuEsModel;
         }).collect(Collectors.toList());
 
-        //三、将组装好的数据传递给ES
-        //nice
+        //二、将组装好的数据传递给ES
+        Result R = searchFeignService.productStatusUp(skuEsModels);
+        if (R.getCode() == 0){
+            //三、修改spu上架状态
+            baseDao.updatePublishStatusById(id);
+        } else {
+            //TODO 执行失败，重复调用？接口幂等性，重试机制？
+        }
 
 
 
