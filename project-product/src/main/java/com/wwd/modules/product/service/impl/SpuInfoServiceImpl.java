@@ -138,6 +138,7 @@ public class SpuInfoServiceImpl extends CrudServiceImpl<SpuInfoDao, SpuInfoEntit
         }).collect(Collectors.toList());
 
         //三、将组装好的数据传递给ES
+        //nice
 
 
 
