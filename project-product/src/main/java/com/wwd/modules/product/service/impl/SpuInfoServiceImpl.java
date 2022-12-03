@@ -110,24 +110,25 @@ public class SpuInfoServiceImpl extends CrudServiceImpl<SpuInfoDao, SpuInfoEntit
         List<Long> skuIds = skuInfoEntities.stream().map(skuInfoEntity -> {
             return skuInfoEntity.getSkuId();
         }).collect(Collectors.toList());
-        Map<Long, Integer> map = null;
+        Map<Long, Long> map = null;
         try{
-            map = wareFeignService.getSkuHasStockVoByIds(skuIds).getData().stream().collect(Collectors.toMap(SkuHasStockVo::getSkuId, item -> item.getStock()));
+            List<SkuHasStockVo> data = wareFeignService.getSkuHasStockVoByIds(skuIds).getData();
+            map = data.stream().collect(Collectors.toMap(SkuHasStockVo::getSkuId, SkuHasStockVo::getStock));
         } catch (Exception e){
             log.error("库存查询异常：原因{}", e);
         }
 
         // 3、sku信息，及相关信息
-        Map<Long, Integer> finalMap = map;
+        Map<Long, Long> finalMap = map;
         List<SkuEsModel> skuEsModels = skuInfoEntities.stream().map(skuInfoEntity -> {
 
             SkuEsModel skuEsModel = new SkuEsModel();
             skuIds.add(skuInfoEntity.getSkuId());
             BeanUtils.copyProperties(skuInfoEntity, skuEsModel);//同名属性值拷贝
             if (finalMap != null){
-                skuEsModel.setHasStock(finalMap.get(skuInfoEntity.getSkuId()) > 0 ? true : false);//TODO//库存
+                skuEsModel.setHasStock(finalMap.get(skuInfoEntity.getSkuId()));//库存
             } else {
-                skuEsModel.setHasStock(true);//默认有库存
+                skuEsModel.setHasStock(0L);//默认没库存
             }
             skuEsModel.setHotScore(10000L);//TODO//热度评分
             skuEsModel.setCatalogName(categoryService.findCategoryName(skuInfoEntity.getCatalogId()));

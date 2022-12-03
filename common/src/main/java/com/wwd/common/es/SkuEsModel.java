@@ -22,7 +22,7 @@ public class SkuEsModel {
     private BigDecimal price;
 
     @ApiModelProperty(value = "库存")
-    private Boolean hasStock;
+    private Long hasStock;
 
     @ApiModelProperty(value = "销量")
     private Long saleCount;

@@ -50,8 +50,8 @@ public class WareSkuServiceImpl extends CrudServiceImpl<WareSkuDao, WareSkuEntit
         List<SkuHasStockVo> skuHasStockVos = skuIds.stream().map(skuId -> {
             SkuHasStockVo skuHasStockVo = new SkuHasStockVo();
             skuHasStockVo.setSkuId(skuId);
-            Integer stock = baseDao.getSkuHasStockVoBySkuId(skuId);
-            skuHasStockVo.setStock(stock);
+            Long stock = baseDao.getSkuHasStockVoBySkuId(skuId);
+            skuHasStockVo.setStock(stock==null?0:stock);
             return skuHasStockVo;
         }).collect(Collectors.toList());
 

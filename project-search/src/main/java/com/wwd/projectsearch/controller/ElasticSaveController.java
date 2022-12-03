@@ -35,7 +35,7 @@ public class ElasticSaveController {
             log.error("商品上架异常", e);
             return new Result().error("商品上架异常");
         }
-        if (R){
+        if (!R){
             return new Result().ok(R);
         }else {
             return new Result().error("商品上架异常");

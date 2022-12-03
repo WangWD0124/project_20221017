@@ -42,11 +42,11 @@ public class ProductSaveServiceImpl implements ProductSaveService {
         }
         BulkResponse bulkResponse = restHighLevelClient.bulk(bulkRequest, ElasticSearchConfig.COMMON_OPTIONS);
 
-        boolean b = bulkResponse.hasFailures();
+        boolean R = bulkResponse.hasFailures();
         List<String> collect = Arrays.stream(bulkResponse.getItems()).map(item -> {
             return item.getId();
         }).collect(Collectors.toList());
-        log.error("商品上架失败：{}", collect);
-        return b;
+        log.debug("商品上架完成：{}", collect);
+        return R;
     }
 }

@@ -10,5 +10,5 @@ public class SkuHasStockVo {
 
     private Long skuId;
 
-    private Integer stock;
+    private Long stock;
 }

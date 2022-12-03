@@ -230,6 +230,11 @@
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-thymeleaf</artifactId>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>
