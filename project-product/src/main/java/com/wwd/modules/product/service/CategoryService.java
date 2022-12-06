@@ -5,6 +5,7 @@ import com.wwd.modules.product.dto.CategoryDTO;
 import com.wwd.modules.product.entity.CategoryEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商品三级分类
@@ -19,4 +20,8 @@ public interface CategoryService extends CrudService<CategoryEntity, CategoryDTO
     Long[] findCatelogPath(Long catelogId);
 
     String findCategoryName(Long catelogId);
+
+    List<CategoryDTO> getCategoryLevel1();
+
+    Map<String, Object> getCatelogJson();
 }

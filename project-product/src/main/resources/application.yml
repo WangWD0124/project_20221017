@@ -99,11 +99,16 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
+    static-path-pattern: /static/**
   servlet:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
       enabled: true
+  thymeleaf:
+    cache: false
+
+
   ## -----------------------redis-----------------------
   redis:
     database: 0
@@ -125,12 +130,9 @@ spring:
         - 192.168.145.101:16381
 
   # 是否开启redis缓存  true开启   false关闭
-  renren:
+  project:
     redis:
       open: true
-
-
-
 
 ## -----------------------mybatis-plus配置-----------------------
 #mybatis

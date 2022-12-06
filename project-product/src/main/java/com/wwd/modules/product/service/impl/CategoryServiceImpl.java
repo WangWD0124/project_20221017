@@ -1,5 +1,6 @@
 package com.wwd.modules.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wwd.common.service.impl.CrudServiceImpl;
 import com.wwd.common.utils.ConvertUtils;
@@ -84,5 +85,25 @@ public class CategoryServiceImpl extends CrudServiceImpl<CategoryDao, CategoryEn
     @Override
     public String findCategoryName(Long catelogId) {
         return baseDao.getCategoryNameBycatId(catelogId);
+    }
+
+    @Override
+    public List<CategoryDTO> getCategoryLevel1() {
+
+        LambdaQueryWrapper<CategoryEntity> wrapper = new LambdaQueryWrapper();
+        wrapper.eq(CategoryEntity::getCatLevel, 1);
+        List<CategoryEntity> categoryEntities = baseDao.selectList(wrapper);
+        return ConvertUtils.sourceToTarget(categoryEntities, CategoryDTO.class);
+    }
+
+    @Override
+    public Map<String, Object> getCatelogJson() {
+
+        Map<String, Object> map = getCategoryLevel1().stream().collect(Collectors.toMap(item -> item.getCatId().toString(), item -> {
+
+
+        }));
+
+        return null;
     }
 }
