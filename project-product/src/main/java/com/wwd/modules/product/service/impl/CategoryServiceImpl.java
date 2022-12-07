@@ -8,6 +8,7 @@ import com.wwd.modules.product.dao.CategoryDao;
 import com.wwd.modules.product.dto.CategoryDTO;
 import com.wwd.modules.product.entity.CategoryEntity;
 import com.wwd.modules.product.service.CategoryService;
+import com.wwd.modules.product.vo.Catelog2Vo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -96,14 +97,35 @@ public class CategoryServiceImpl extends CrudServiceImpl<CategoryDao, CategoryEn
         return ConvertUtils.sourceToTarget(categoryEntities, CategoryDTO.class);
     }
 
+    public List<CategoryDTO> getCategoryLevel2or3(Long parentCid) {
+
+        LambdaQueryWrapper<CategoryEntity> wrapper = new LambdaQueryWrapper();
+        wrapper.eq(CategoryEntity::getParentCid, parentCid);
+        List<CategoryEntity> categoryEntities = baseDao.selectList(wrapper);
+        return ConvertUtils.sourceToTarget(categoryEntities, CategoryDTO.class);
+    }
+
     @Override
     public Map<String, Object> getCatelogJson() {
 
         Map<String, Object> map = getCategoryLevel1().stream().collect(Collectors.toMap(item -> item.getCatId().toString(), item -> {
-
-
+            return getCategoryLevel2or3(item.getCatId()).stream().map(categoryDTO2 -> {
+                Catelog2Vo catelog2Vo = new Catelog2Vo();
+                catelog2Vo.setCatelog1Id(categoryDTO2.getParentCid().toString());
+                catelog2Vo.setId(categoryDTO2.getCatId().toString());
+                catelog2Vo.setName(categoryDTO2.getName());
+                List<Catelog2Vo.Catelog3Vo> catelog3VoList = getCategoryLevel2or3(categoryDTO2.getCatId()).stream().map(categoryDTO3 -> {
+                    Catelog2Vo.Catelog3Vo catelog3Vo = new Catelog2Vo.Catelog3Vo();
+                    catelog3Vo.setCatelog2Id(categoryDTO3.getParentCid().toString());
+                    catelog3Vo.setId(categoryDTO3.getCatId().toString());
+                    catelog3Vo.setName(categoryDTO3.getName());
+                    return catelog3Vo;
+                }).collect(Collectors.toList());
+                catelog2Vo.setCatelog3List(catelog3VoList);
+                return catelog2Vo;
+            }).collect(Collectors.toList());
         }));
 
-        return null;
+        return map;
     }
 }

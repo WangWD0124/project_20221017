@@ -26,7 +26,7 @@ public class IndexController {
         return "index";
     }
 
-    @RequestMapping("index/json/catalog.json")
+    @RequestMapping("index/json/catelog.json")
     @ResponseBody
     public Map<String, Object> getCatelogJson() {
 
