@@ -99,7 +99,7 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
-    static-path-pattern: /static/**
+    # static-path-pattern: /static/**
   servlet:
     multipart:
       max-file-size: 100MB
