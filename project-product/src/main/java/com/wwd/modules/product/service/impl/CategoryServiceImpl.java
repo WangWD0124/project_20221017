@@ -1,5 +1,7 @@
 package com.wwd.modules.product.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wwd.common.service.impl.CrudServiceImpl;
@@ -10,6 +12,8 @@ import com.wwd.modules.product.entity.CategoryEntity;
 import com.wwd.modules.product.service.CategoryService;
 import com.wwd.modules.product.vo.Catelog2Vo;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,6 +31,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class CategoryServiceImpl extends CrudServiceImpl<CategoryDao, CategoryEntity, CategoryDTO> implements CategoryService {
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public QueryWrapper<CategoryEntity> getWrapper(Map<String, Object> params){
@@ -97,24 +103,39 @@ public class CategoryServiceImpl extends CrudServiceImpl<CategoryDao, CategoryEn
         return ConvertUtils.sourceToTarget(categoryEntities, CategoryDTO.class);
     }
 
-    public List<CategoryDTO> getCategoryLevel2or3(Long parentCid) {
-
-        LambdaQueryWrapper<CategoryEntity> wrapper = new LambdaQueryWrapper();
-        wrapper.eq(CategoryEntity::getParentCid, parentCid);
-        List<CategoryEntity> categoryEntities = baseDao.selectList(wrapper);
-        return ConvertUtils.sourceToTarget(categoryEntities, CategoryDTO.class);
-    }
-
     @Override
     public Map<String, Object> getCatelogJson() {
 
-        Map<String, Object> map = getCategoryLevel1().stream().collect(Collectors.toMap(item -> item.getCatId().toString(), item -> {
-            return getCategoryLevel2or3(item.getCatId()).stream().map(categoryDTO2 -> {
+        //加载缓存数据
+        String catelogJSON = stringRedisTemplate.opsForValue().get("catelogJSON");
+        //判断是否为空
+        if (StringUtils.isEmpty(catelogJSON)){
+            //首次从数据库读取
+            Map<String, Object> catelogJsonFromDB = getCatelogJsonFromDB();
+            //将数据对象转成JSON字符串数据（序列化）写入缓存
+            String json = JSON.toJSONString(catelogJsonFromDB);
+            stringRedisTemplate.opsForValue().set("catelogJSON", json);
+            return catelogJsonFromDB;
+        }
+        //将JSON字符串数据转成对象（反序列化）
+        Map<String, Object> map = JSON.parseObject(catelogJSON, new TypeReference<Map<String, Object>>() {});
+        return map;
+    }
+
+    public Map<String, Object> getCatelogJsonFromDB() {
+
+        //减少访问数据库次数，一次性读取
+        List<CategoryEntity> categoryEntities = baseDao.selectList(null);
+
+        List<CategoryEntity> categoryLevel1Entities = getCategoryByParentCid(categoryEntities, 0L);
+
+        Map<String, Object> map = categoryLevel1Entities.stream().collect(Collectors.toMap(item -> item.getCatId().toString(), item -> {
+            return getCategoryByParentCid(categoryEntities, item.getCatId()).stream().map(categoryDTO2 -> {
                 Catelog2Vo catelog2Vo = new Catelog2Vo();
                 catelog2Vo.setCatelog1Id(categoryDTO2.getParentCid().toString());
                 catelog2Vo.setId(categoryDTO2.getCatId().toString());
                 catelog2Vo.setName(categoryDTO2.getName());
-                List<Catelog2Vo.Catelog3Vo> catelog3VoList = getCategoryLevel2or3(categoryDTO2.getCatId()).stream().map(categoryDTO3 -> {
+                List<Catelog2Vo.Catelog3Vo> catelog3VoList = getCategoryByParentCid(categoryEntities, categoryDTO2.getCatId()).stream().map(categoryDTO3 -> {
                     Catelog2Vo.Catelog3Vo catelog3Vo = new Catelog2Vo.Catelog3Vo();
                     catelog3Vo.setCatelog2Id(categoryDTO3.getParentCid().toString());
                     catelog3Vo.setId(categoryDTO3.getCatId().toString());
@@ -127,5 +148,9 @@ public class CategoryServiceImpl extends CrudServiceImpl<CategoryDao, CategoryEn
         }));
 
         return map;
+    }
+
+    private List<CategoryEntity> getCategoryByParentCid(List<CategoryEntity> categoryEntities, long parentCid) {
+        return categoryEntities.stream().filter(categoryEntity -> categoryEntity.getParentCid()==parentCid).collect(Collectors.toList());
     }
 }
