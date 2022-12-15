@@ -2,6 +2,7 @@ package com.wwd.modules.product.web;
 
 import com.wwd.modules.product.dto.CategoryDTO;
 import com.wwd.modules.product.service.CategoryService;
+import com.wwd.modules.product.vo.Catelog2Vo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +29,7 @@ public class IndexController {
 
     @RequestMapping("index/json/catelog.json")
     @ResponseBody
-    public Map<String, Object> getCatelogJson() {
+    public Map<String, List<Catelog2Vo>> getCatelogJson() {
 
         return categoryService.getCatelogJson();
     }

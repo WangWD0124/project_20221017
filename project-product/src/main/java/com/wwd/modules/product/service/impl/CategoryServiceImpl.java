@@ -11,10 +11,10 @@ import com.wwd.modules.product.dto.CategoryDTO;
 import com.wwd.modules.product.entity.CategoryEntity;
 import com.wwd.modules.product.service.CategoryService;
 import com.wwd.modules.product.vo.Catelog2Vo;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +39,7 @@ public class CategoryServiceImpl extends CrudServiceImpl<CategoryDao, CategoryEn
         String id = (String)params.get("id");
 
         QueryWrapper<CategoryEntity> wrapper = new QueryWrapper<>();
-        wrapper.eq(StringUtils.isNotBlank(id), "id", id);
+        wrapper.eq(!StringUtils.isEmpty(id), "id", id);
 
         return wrapper;
     }
@@ -97,39 +97,49 @@ public class CategoryServiceImpl extends CrudServiceImpl<CategoryDao, CategoryEn
     @Override
     public List<CategoryDTO> getCategoryLevel1() {
 
-        LambdaQueryWrapper<CategoryEntity> wrapper = new LambdaQueryWrapper();
-        wrapper.eq(CategoryEntity::getCatLevel, 1);
-        List<CategoryEntity> categoryEntities = baseDao.selectList(wrapper);
-        return ConvertUtils.sourceToTarget(categoryEntities, CategoryDTO.class);
+        //加载缓存数据
+        String categoryLevel1 = stringRedisTemplate.opsForValue().get("categoryLevel1");
+        //判断是否为空
+        if (StringUtils.isEmpty(categoryLevel1)) {
+            LambdaQueryWrapper<CategoryEntity> wrapper = new LambdaQueryWrapper();
+            wrapper.eq(CategoryEntity::getCatLevel, 1);
+            List<CategoryEntity> categoryEntities = baseDao.selectList(wrapper);
+            String json = JSON.toJSONString(categoryEntities);
+            stringRedisTemplate.opsForValue().set("categoryLevel1", json);
+            return ConvertUtils.sourceToTarget(categoryEntities, CategoryDTO.class);
+        }
+        //将JSON字符串数据转成对象（反序列化）
+        List<CategoryDTO> list = JSON.parseObject(categoryLevel1, new TypeReference<List<CategoryDTO>>(){});
+        return list;
     }
 
     @Override
-    public Map<String, Object> getCatelogJson() {
+    public Map<String, List<Catelog2Vo>> getCatelogJson() {
 
         //加载缓存数据
         String catelogJSON = stringRedisTemplate.opsForValue().get("catelogJSON");
         //判断是否为空
         if (StringUtils.isEmpty(catelogJSON)){
             //首次从数据库读取
-            Map<String, Object> catelogJsonFromDB = getCatelogJsonFromDB();
+            Map<String, List<Catelog2Vo>> catelogJsonFromDB = getCatelogJsonFromDB();
             //将数据对象转成JSON字符串数据（序列化）写入缓存
             String json = JSON.toJSONString(catelogJsonFromDB);
             stringRedisTemplate.opsForValue().set("catelogJSON", json);
             return catelogJsonFromDB;
         }
         //将JSON字符串数据转成对象（反序列化）
-        Map<String, Object> map = JSON.parseObject(catelogJSON, new TypeReference<Map<String, Object>>() {});
+        Map<String, List<Catelog2Vo>> map = JSON.parseObject(catelogJSON, new TypeReference<Map<String, List<Catelog2Vo>>>() {});
         return map;
     }
 
-    public Map<String, Object> getCatelogJsonFromDB() {
+    public Map<String, List<Catelog2Vo>> getCatelogJsonFromDB() {
 
         //减少访问数据库次数，一次性读取
         List<CategoryEntity> categoryEntities = baseDao.selectList(null);
 
         List<CategoryEntity> categoryLevel1Entities = getCategoryByParentCid(categoryEntities, 0L);
 
-        Map<String, Object> map = categoryLevel1Entities.stream().collect(Collectors.toMap(item -> item.getCatId().toString(), item -> {
+        Map<String, List<Catelog2Vo>> map = categoryLevel1Entities.stream().collect(Collectors.toMap(item -> item.getCatId().toString(), item -> {
             return getCategoryByParentCid(categoryEntities, item.getCatId()).stream().map(categoryDTO2 -> {
                 Catelog2Vo catelog2Vo = new Catelog2Vo();
                 catelog2Vo.setCatelog1Id(categoryDTO2.getParentCid().toString());
