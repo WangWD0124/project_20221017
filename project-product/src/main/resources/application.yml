@@ -110,12 +110,19 @@ spring:
 
 
   ## -----------------------redis-----------------------
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000
+      # use-key-prefix: true
+      # key-prefix: CACHE_
+      cache-null-values: true
   redis:
-#    host: 192.168.145.101
-#    port: 6379
+    #    host: 192.168.145.101
+    #    port: 6379
     password: 123456   # 密码（默认为空）
     cluster:
-      nodes: project.com:6381, project.com:6380, project.com:6379
+      nodes: project.com:6379, project.com:6380, project.com:6381, project.com:6382, project.com:6383, project.com:6384
   #    timeout: 6000ms  # 连接超时时长（毫秒）
 #    jedis:
 #      pool:

@@ -24,5 +24,5 @@ public interface CategoryService extends CrudService<CategoryEntity, CategoryDTO
 
     List<CategoryDTO> getCategoryLevel1();
 
-    Map<String, List<Catelog2Vo>> getCatelogJson();
+    Map<String, List<Catelog2Vo>> getCatelogJson() throws InterruptedException;
 }

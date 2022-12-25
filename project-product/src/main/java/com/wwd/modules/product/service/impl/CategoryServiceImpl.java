@@ -12,14 +12,14 @@ import com.wwd.modules.product.entity.CategoryEntity;
 import com.wwd.modules.product.service.CategoryService;
 import com.wwd.modules.product.vo.Catelog2Vo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 
@@ -33,6 +33,8 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl extends CrudServiceImpl<CategoryDao, CategoryEntity, CategoryDTO> implements CategoryService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+//    @Autowired
+//    private RedissonClient redissonClient;
 
     @Override
     public QueryWrapper<CategoryEntity> getWrapper(Map<String, Object> params){
@@ -70,7 +72,9 @@ public class CategoryServiceImpl extends CrudServiceImpl<CategoryDao, CategoryEn
             return rootCategoryDTO;
         }).collect(Collectors.toList());
     }
-
+    /**
+     * 查询三级分类，并以路径列表返回
+     */
     @Override
     public Long[] findCatelogPath(Long catelogId) {
 
@@ -80,7 +84,9 @@ public class CategoryServiceImpl extends CrudServiceImpl<CategoryDao, CategoryEn
         Collections.reverse(catelogPath);
         return catelogPath.toArray(new Long[catelogPath.size()]);
     }
-
+    /**
+     * 查询三级分类父结点ID
+     */
     private void findParentCid(List<Long> catelogPath, Long catelogId) {
         Long parentCid = baseDao.getParentCidBycatId(catelogId);
         if (parentCid != 0){
@@ -88,51 +94,31 @@ public class CategoryServiceImpl extends CrudServiceImpl<CategoryDao, CategoryEn
             findParentCid(catelogPath, parentCid);
         }
     }
-
+    /**
+     * 查询三级分类名称
+     */
     @Override
     public String findCategoryName(Long catelogId) {
         return baseDao.getCategoryNameBycatId(catelogId);
     }
-
+    /**
+     * 查询三级分类一级列表
+     */
+    @Cacheable(value = {"category"}, key = "#root.method.name")//缓存
     @Override
     public List<CategoryDTO> getCategoryLevel1() {
 
-        //加载缓存数据
-        String categoryLevel1 = stringRedisTemplate.opsForValue().get("categoryLevel1");
-        //判断是否为空
-        if (StringUtils.isEmpty(categoryLevel1)) {
-            LambdaQueryWrapper<CategoryEntity> wrapper = new LambdaQueryWrapper();
-            wrapper.eq(CategoryEntity::getCatLevel, 1);
-            List<CategoryEntity> categoryEntities = baseDao.selectList(wrapper);
-            String json = JSON.toJSONString(categoryEntities);
-            stringRedisTemplate.opsForValue().set("categoryLevel1", json);
-            return ConvertUtils.sourceToTarget(categoryEntities, CategoryDTO.class);
-        }
-        //将JSON字符串数据转成对象（反序列化）
-        List<CategoryDTO> list = JSON.parseObject(categoryLevel1, new TypeReference<List<CategoryDTO>>(){});
-        return list;
+        LambdaQueryWrapper<CategoryEntity> wrapper = new LambdaQueryWrapper();
+        wrapper.eq(CategoryEntity::getCatLevel, 1);
+        List<CategoryEntity> categoryLevel1Entities = baseDao.selectList(wrapper);
+        List<CategoryDTO> categoryLevel1DTOS = ConvertUtils.sourceToTarget(categoryLevel1Entities, CategoryDTO.class);
+        return categoryLevel1DTOS;
+
     }
 
+    @Cacheable(value = {"category"}, key = "#root.method.name")//缓存
     @Override
     public Map<String, List<Catelog2Vo>> getCatelogJson() {
-
-        //加载缓存数据
-        String catelogJSON = stringRedisTemplate.opsForValue().get("catelogJSON");
-        //判断是否为空
-        if (StringUtils.isEmpty(catelogJSON)){
-            //首次从数据库读取
-            Map<String, List<Catelog2Vo>> catelogJsonFromDB = getCatelogJsonFromDB();
-            //将数据对象转成JSON字符串数据（序列化）写入缓存
-            String json = JSON.toJSONString(catelogJsonFromDB);
-            stringRedisTemplate.opsForValue().set("catelogJSON", json);
-            return catelogJsonFromDB;
-        }
-        //将JSON字符串数据转成对象（反序列化）
-        Map<String, List<Catelog2Vo>> map = JSON.parseObject(catelogJSON, new TypeReference<Map<String, List<Catelog2Vo>>>() {});
-        return map;
-    }
-
-    public Map<String, List<Catelog2Vo>> getCatelogJsonFromDB() {
 
         //减少访问数据库次数，一次性读取
         List<CategoryEntity> categoryEntities = baseDao.selectList(null);

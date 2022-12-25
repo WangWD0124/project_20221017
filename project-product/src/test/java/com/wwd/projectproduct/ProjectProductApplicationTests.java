@@ -8,13 +8,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 @SpringBootTest
 class ProjectProductApplicationTests {
 
-    @Autowired
-    StringRedisTemplate stringRedisTemplate;
-    @Test
-    public void testStringRedisTemplate() {
-        stringRedisTemplate.opsForValue().set("h", "hh");
-        System.out.println(stringRedisTemplate.opsForValue().get("h"));
-    }
 
 
 

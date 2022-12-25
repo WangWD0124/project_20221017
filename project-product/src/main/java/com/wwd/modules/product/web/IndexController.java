@@ -29,7 +29,7 @@ public class IndexController {
 
     @RequestMapping("index/json/catelog.json")
     @ResponseBody
-    public Map<String, List<Catelog2Vo>> getCatelogJson() {
+    public Map<String, List<Catelog2Vo>> getCatelogJson() throws InterruptedException {
 
         return categoryService.getCatelogJson();
     }
