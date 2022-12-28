@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class SearchController {
 
+
     @Autowired
     private SearchService searchService;
 
