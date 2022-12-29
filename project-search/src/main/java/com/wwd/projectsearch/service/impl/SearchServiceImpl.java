@@ -17,8 +17,11 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.nested.NestedAggregationBuilder;
+import org.elasticsearch.search.aggregations.bucket.nested.ParsedNested;
 import org.elasticsearch.search.aggregations.bucket.terms.ParsedLongTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -94,6 +97,8 @@ public class SearchServiceImpl implements SearchService {
         if (param.getHasStock()!=null){
             boolQueryBuilder.filter(QueryBuilders.termQuery("hasStock", param.getHasStock()==1));
         }
+        searchSourceBuilder.query(boolQueryBuilder);
+
         //按价格区间
         if (!StringUtils.isEmpty(param.getSkuPrice())){
             RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery("price");
@@ -105,7 +110,9 @@ public class SearchServiceImpl implements SearchService {
             } else if (param.getSkuPrice().endsWith("_")){
                 rangeQueryBuilder.gte(s[0]);
             }
+            searchSourceBuilder.query(rangeQueryBuilder);
         }
+
 
         //按排序
         if (!StringUtils.isEmpty(param.getSort())){
@@ -122,6 +129,7 @@ public class SearchServiceImpl implements SearchService {
             highlightBuilder.field("skuTitle");
             highlightBuilder.preTags("<b style='color:red'>");
             highlightBuilder.postTags("</b>");
+            searchSourceBuilder.highlighter(highlightBuilder);
         }
 
         /**
@@ -146,6 +154,7 @@ public class SearchServiceImpl implements SearchService {
         attr_id_agg.subAggregation(AggregationBuilders.terms("attr_value_agg").field("attrs.attrValue").size(50));
         attr_agg.subAggregation(attr_id_agg);
         searchSourceBuilder.aggregation(attr_agg);
+
 
         System.out.println("----->"+searchSourceBuilder.toString());
         SearchRequest searchRequest = new SearchRequest(new String[]{EsConstant.PRODUCT_INDEX}, searchSourceBuilder);
@@ -177,11 +186,11 @@ public class SearchServiceImpl implements SearchService {
         for (Terms.Bucket category_aggBucket : category_aggBuckets) {
             SearchResult.CategoryVo categoryVo = new SearchResult.CategoryVo();
             long category_idKey = category_aggBucket.getKeyAsNumber().longValue();
-            categoryVo.setCatalogId(category_idKey);
+            categoryVo.setCatelogId(category_idKey);
 
-            ParsedLongTerms category_name_agg = category_aggBucket.getAggregations().get("category_name_agg");
+            ParsedStringTerms category_name_agg = category_aggBucket.getAggregations().get("category_name_agg");
             String category_nameKey = category_name_agg.getBuckets().get(0).getKeyAsString();
-            categoryVo.setCatalogName(category_nameKey);
+            categoryVo.setCatelogName(category_nameKey);
 
             categoryVos.add(categoryVo);
         }
@@ -196,11 +205,11 @@ public class SearchServiceImpl implements SearchService {
             long brand_idKey = brand_aggBucket.getKeyAsNumber().longValue();
             brandVo.setBrandId(brand_idKey);
 
-            ParsedLongTerms brand_name_agg = brand_aggBucket.getAggregations().get("brand_name_agg");
+            ParsedStringTerms brand_name_agg = brand_aggBucket.getAggregations().get("brand_name_agg");
             String brand_nameKey = brand_name_agg.getBuckets().get(0).getKeyAsString();
             brandVo.setBrandName(brand_nameKey);
 
-            ParsedLongTerms brand_img_agg = brand_aggBucket.getAggregations().get("brand_img_agg");
+            ParsedStringTerms brand_img_agg = brand_aggBucket.getAggregations().get("brand_img_agg");
             String brand_imgKey = brand_name_agg.getBuckets().get(0).getKeyAsString();
             brandVo.setLogo(brand_imgKey);
 
@@ -210,20 +219,21 @@ public class SearchServiceImpl implements SearchService {
 
         //属性及其值聚合查询
         List<SearchResult.AttrVo> attrVos = new ArrayList<>();
-        ParsedLongTerms attr_agg = searchResponse.getAggregations().get("attr_agg");
-        List<? extends Terms.Bucket> buckets = category_agg.getBuckets();
+        ParsedNested attr_agg = searchResponse.getAggregations().get("attr_agg");
+        ParsedLongTerms attr_id_agg = attr_agg.getAggregations().get("attr_id_agg");
+        List<? extends Terms.Bucket> buckets = attr_id_agg.getBuckets();
         for (Terms.Bucket bucket : buckets) {
             SearchResult.AttrVo attrVo = new SearchResult.AttrVo();
 
             long attr_idKey = bucket.getKeyAsNumber().longValue();
             attrVo.setAttrId(attr_idKey);
 
-            ParsedLongTerms attr_name_agg = bucket.getAggregations().get("attr_name_agg");
+            ParsedStringTerms attr_name_agg = bucket.getAggregations().get("attr_name_agg");
             String attr_nameKey = attr_name_agg.getBuckets().get(0).getKeyAsString();
             attrVo.setAttrName(attr_nameKey);
 
             List<String> attrValue = new ArrayList<>();
-            ParsedLongTerms attr_value_agg = bucket.getAggregations().get("attr_value_agg");
+            ParsedStringTerms attr_value_agg = bucket.getAggregations().get("attr_value_agg");
             List<? extends Terms.Bucket> attr_value_aggBuckets = attr_value_agg.getBuckets();
             for (Terms.Bucket attr_value_aggBucket : attr_value_aggBuckets) {
                 String attr_value_aggBucketKeyAsString = attr_value_aggBucket.getKeyAsString();

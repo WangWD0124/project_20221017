@@ -791,9 +791,9 @@
                     <div class="sl_value">
                         <div class="sl_value_logo">
                             <ul>
-                                <li th:each="brand : ${result.brands}">
-                                    <a th:href="${'javascript:searchProduct(&quot;brandId&quot;, ' + brand.brandId + ')'}">
-                                        <img th:src="${brand.brandImg}" alt="">
+                                <li th:each="brand : ${result.brandVos}">
+                                    <a th:href="${'javascript:searchProduct(&quot;brandIds&quot;, ' + brand.brandId + ')'}">
+                                        <img th:src="${brand.logo}" alt="">
                                         <div th:text="${brand.brandName}">
                                             默认华为(HUAWEI)
                                         </div>
@@ -822,9 +822,9 @@
                     </div>
                     <div class="sl_value">
                         <ul>
-                            <li th:each="catalog : ${result.catalogs}">
-                                <a th:href="${'javascript:searchProduct(&quot;catalog3Id&quot;, ' + catalog.catalogId + ')'}"
-                                   th:text="${catalog.catalogName}">
+                            <li th:each="catelog : ${result.categoryVos}">
+                                <a th:href="${'javascript:searchProduct(&quot;categoryLevel3Id&quot;, ' + catelog.catelogId + ')'}"
+                                   th:text="${catelog.catelogName}">
                                     默认分类名字
                                 </a>
                             </li>
@@ -844,7 +844,7 @@
                     </div>
                 </div>
                 <!--遍历所有需要展示的属性-->
-                <div class="JD_pre" th:each="attr : ${result.attrs}"
+                <div class="JD_pre" th:each="attr : ${result.attrVos}"
                      th:if="${!#lists.contains(result.attrIds,attr.attrId)}">
                     <div class="sl_key">
                         <span th:text="${attr.attrName}">属性名字</span>
@@ -1194,26 +1194,25 @@
                     </div>
                     <!--排序内容; 商品 每四个是一组-->
                     <div class="rig_tab">
-                        <div th:each="product : ${result.getProducts()}">
+                        <div th:each="product : ${result.products}">
                             <div class="ico">
                                 <i class="iconfont icon-weiguanzhu"></i>
                                 <a href="/list.html">关注</a>
                             </div>
                             <p class="da">
-                                <a th:href="|http://item.gulimall.com/${product.skuId}.html|">
-                                    <img th:src="${product.skuImg}" class="dim">
+                                <a th:href="|http://item.project.com/${product.skuId}.html|">
+                                    <img th:src="${product.skuDefaultImg}" class="dim">
                                 </a>
                             </p>
                             <ul class="tab_im">
                                 <li><a href="/list.html" title="黑色">
-                                    <img th:src="${product.skuImg}"></a></li>
+                                    <img th:src="${product.skuDefaultImg}"></a></li>
                             </ul>
                             <p class="tab_R">
-                                <span th:text="'￥' + ${product.skuPrice}">¥5199.00</span>
+                                <span th:text="'￥' + ${product.price}"></span>
                             </p>
                             <p class="tab_JE">
                                 <a href="/list.html" th:utext="${product.skuTitle}">
-                                    HUAWEI P40 Pro+ 麒麟990 5G 流光幻镜 套餐二 麒麟990 5G SoC芯片 5000万超感知徕卡五摄 100倍双目变焦 全网通5G
                                 </a>
                             </p>
                             <p class="tab_PI">已有<span>11万+</span>热门评价

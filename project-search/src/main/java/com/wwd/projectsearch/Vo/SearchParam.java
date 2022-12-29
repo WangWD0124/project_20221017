@@ -18,5 +18,5 @@ public class SearchParam {
     private String skuPrice;//价格区间
     private List<Long> brandIds;//品牌id
     private List<String> attrs;//属性及其值
-    private Integer pageNum;//页码
+    private Integer pageNum = 1;//页码
  }
