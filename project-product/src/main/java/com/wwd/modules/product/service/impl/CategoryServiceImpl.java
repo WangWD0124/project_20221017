@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class CategoryServiceImpl extends CrudServiceImpl<CategoryDao, CategoryEntity, CategoryDTO> implements CategoryService {
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
+//    @Autowired
+//    private StringRedisTemplate stringRedisTemplate;
 //    @Autowired
 //    private RedissonClient redissonClient;
 
@@ -84,6 +84,7 @@ public class CategoryServiceImpl extends CrudServiceImpl<CategoryDao, CategoryEn
         Collections.reverse(catelogPath);
         return catelogPath.toArray(new Long[catelogPath.size()]);
     }
+
     /**
      * 查询三级分类父结点ID
      */

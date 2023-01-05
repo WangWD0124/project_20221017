@@ -90,6 +90,9 @@ public class SpuInfoServiceImpl extends CrudServiceImpl<SpuInfoDao, SpuInfoEntit
         return getPageData(page, currentDtoClass());
     }
 
+    /**
+     * 商品上架+上传商品至ES
+     */
     @Override
     public void updatePublishStatusById(Long id) {
 

@@ -149,7 +149,7 @@ public class SearchServiceImpl implements SearchService {
 
         //聚合查询属性（包括名称、值列表）
         NestedAggregationBuilder attr_agg = AggregationBuilders.nested("attr_agg", "attrs");
-        TermsAggregationBuilder attr_id_agg = AggregationBuilders.terms("attr_id_agg").field("attrs.attrId").size(1);
+        TermsAggregationBuilder attr_id_agg = AggregationBuilders.terms("attr_id_agg").field("attrs.attrId").size(50);
         attr_id_agg.subAggregation(AggregationBuilders.terms("attr_name_agg").field("attrs.attrName").size(1));
         attr_id_agg.subAggregation(AggregationBuilders.terms("attr_value_agg").field("attrs.attrValue").size(50));
         attr_agg.subAggregation(attr_id_agg);
@@ -172,8 +172,10 @@ public class SearchServiceImpl implements SearchService {
             for (SearchHit hit : hits) {
                 String sourceAsString = hit.getSourceAsString();
                 SkuEsModel skuEsModel = JSON.parseObject(sourceAsString, SkuEsModel.class);
-                HighlightField skuTitle = hit.getHighlightFields().get("skuTitle");
-                skuEsModel.setSkuTitle(skuTitle.fragments()[0].string());
+                if (!StringUtils.isEmpty(searchParam.getKeyword())) {
+                    HighlightField skuTitle = hit.getHighlightFields().get("skuTitle");
+                    skuEsModel.setSkuTitle(skuTitle.fragments()[0].string());
+                }
                 skuEsModels.add(skuEsModel);
             }
         }
@@ -210,7 +212,7 @@ public class SearchServiceImpl implements SearchService {
             brandVo.setBrandName(brand_nameKey);
 
             ParsedStringTerms brand_img_agg = brand_aggBucket.getAggregations().get("brand_img_agg");
-            String brand_imgKey = brand_name_agg.getBuckets().get(0).getKeyAsString();
+            String brand_imgKey = brand_img_agg.getBuckets().get(0).getKeyAsString();
             brandVo.setLogo(brand_imgKey);
 
             brandVos.add(brandVo);
