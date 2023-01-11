@@ -4,6 +4,7 @@ import com.wwd.common.page.PageData;
 import com.wwd.common.service.CrudService;
 import com.wwd.modules.product.dto.AttrGroupDTO;
 import com.wwd.modules.product.entity.AttrGroupEntity;
+import com.wwd.modules.product.vo.SkuItemVo;
 
 import java.util.List;
 import java.util.Map;
@@ -19,4 +20,6 @@ public interface AttrGroupService extends CrudService<AttrGroupEntity, AttrGroup
     PageData<AttrGroupDTO> page(Map<String, Object> params, Long catelog_id);
 
     List<AttrGroupDTO> listWithAttrByCatelog_id(Long catelog_id);
+
+    List<SkuItemVo.SpuItemBaseAttrVo> getGroupWithBaseAttrBySpuId(Long spuId);
 }

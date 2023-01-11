@@ -32,7 +32,7 @@ public class ProductSaveServiceImpl implements ProductSaveService {
         //1、es中建立索引（见product-mapping.txt）
 
         //2、es保存数据
-        BulkRequest bulkRequest = new BulkRequest();
+        BulkRequest bulkRequest = new BulkRequest();//批量新增文档
         for (SkuEsModel skuEsModel : skuEsModelList){
             IndexRequest indexRequest = new IndexRequest(EsConstant.PRODUCT_INDEX);
             indexRequest.id(skuEsModel.getSkuId().toString());

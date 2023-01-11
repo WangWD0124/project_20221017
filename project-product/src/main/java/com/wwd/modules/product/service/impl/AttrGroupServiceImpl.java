@@ -13,6 +13,7 @@ import com.wwd.modules.product.dao.AttrGroupDao;
 import com.wwd.modules.product.dto.AttrGroupDTO;
 import com.wwd.modules.product.entity.AttrGroupEntity;
 import com.wwd.modules.product.service.AttrGroupService;
+import com.wwd.modules.product.vo.SkuItemVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -63,5 +64,11 @@ public class AttrGroupServiceImpl extends CrudServiceImpl<AttrGroupDao, AttrGrou
         List<AttrGroupEntity> attrGroupEntities = baseDao.selectList(wrapper);
         List<AttrGroupDTO> attrGroupDTOS = ConvertUtils.sourceToTarget(attrGroupEntities, AttrGroupDTO.class);
         return attrGroupDTOS;
+    }
+
+    @Override
+    public List<SkuItemVo.SpuItemBaseAttrVo> getGroupWithBaseAttrBySpuId(Long spuId) {
+
+        return baseDao.getGroupWithBaseAttrBySpuId(spuId);
     }
 }

@@ -12,5 +12,16 @@
         <result property="catelogId" column="catelog_id"/>
     </resultMap>
 
+    <!-- 用于商品详情页spu基本属性组查询 -->
+    <resultMap id="SpuBaseAttrGroupVo" type="com.wwd.modules.product.vo.SkuItemVo$SpuItemBaseAttrVo">
+        <result property="groupName" column="attr_group_name"></result>
+        <collection property="attrs" ofType="com.wwd.modules.product.vo.SkuItemVo$SpuBaseAttrVo">
+            <result property="attrName" column="attr_name"></result>
+            <result property="attrValue" column="attr_value"></result>
+        </collection>
+    </resultMap>
+    <select id="getGroupWithBaseAttrBySpuId" resultMap="SpuBaseAttrGroupVo">
+        select t3.attr_group_name,t1.attr_name,t1.attr_value from pms_product_attr_value t1 join pms_attr_attrgroup_relation t2 on t1.attr_id=t2.attr_id join pms_attr_group t3 on t2.attr_group_id=t3.attr_group_id where t1.spu_id=#{spu_id}
+    </select>
 
 </mapper>

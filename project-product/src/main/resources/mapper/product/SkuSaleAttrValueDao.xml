@@ -12,5 +12,16 @@
         <result property="attrSort" column="attr_sort"/>
     </resultMap>
 
+    <resultMap id="saleAttr" type="com.wwd.modules.product.vo.SkuItemVo$SkuItemSaleAttrVo">
+        <result property="attrName" column="attr_name"></result>
+        <collection property="attrValues" ofType="com.wwd.modules.product.vo.SkuItemVo$AttrValueWithSkuIdVo">
+            <result property="attrValue" column="attr_value"></result>
+            <result property="skuIds" column="skuIds"></result>
+        </collection>
+    </resultMap>
+    <select id="getSkuSaleAttrVoBySpuId" resultMap="saleAttr">
+        select t2.attr_name,t2.attr_value,GROUP_CONCAT(distinct t2.sku_id) as skuIds from pms_sku_info t1 join pms_sku_sale_attr_value t2 on t1.sku_id=t2.sku_id where t1.spu_id = #{spu_id} group by t2.attr_name,t2.attr_value
+    </select>
+
 
 </mapper>

@@ -15,7 +15,7 @@
         <!--品牌官方网站-->
         <div class="min">
             <ul class="header_ul_left">
-                <li class="glyphicon glyphicon-home"><a href="http://gulimall.com/" class="aa">京东首页</a></li>
+                <li class="glyphicon glyphicon-home"><a href="http://project.com/" class="aa">京东首页</a></li>
                 <li class="glyphicon glyphicon-map-marker"><a href="/static/item/javascript:;">北京</a>
                     <ol id="beijing">
                         <li style="background: red;"><a href="/static/item/javascript:;" style="color: white;">北京</a>
@@ -60,15 +60,15 @@
             `
             <ul class="header_ul_right">
                 <li style="border: 0;">
-                    <a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/login.html"
+                    <a th:if="${session.loginUser == null}" href="http://auth.project.com/login.html"
                        class="aa">你好，请登录</a>
                     <a th:if="${session.loginUser != null}">欢迎, [[${session.loginUser.nickname}]]</a>
                 </li>
                 <li>
-                    <a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/reg.html"
+                    <a th:if="${session.loginUser == null}" href="http://auth.project.com/reg.html"
                        style="color: red;">免费注册</a>
                 </li>
-                <li><a href="http://member.gulimall.com/memberOrder.html" class="aa">我的订单</a> |</li>
+                <li><a href="http://member.project.com/memberOrder.html" class="aa">我的订单</a> |</li>
                 <li class="jingdong"><a href="/static/item/javascript:;">我的京东</a><span
                         class="glyphicon glyphicon-menu-down">|</span>
                     <ol class="jingdong_ol">
@@ -264,11 +264,11 @@
     <nav>
         <div class="nav_min">
             <div class="nav_top">
-                <div class="nav_top_one"><a href="http://gulimall.com"><img src="/static/item/img/111.png"/></a></div>
+                <div class="nav_top_one"><a href="http://project.com"><img src="/static/item/img/111.png"/></a></div>
                 <div class="nav_top_two"><input type="text"/>
                     <button>搜索</button>
                 </div>
-                <div class="nav_top_three"><a href="http://cart.gulimall.com/cart.html">我的购物车</a><span
+                <div class="nav_top_three"><a href="http://cart.project.com/cart.html">我的购物车</a><span
                         class="glyphicon glyphicon-shopping-cart"></span>
                     <div class="nav_top_three_1">
                         <img src="/static/item/img/44.png"/>购物车还没有商品，赶紧选购吧！
@@ -523,17 +523,7 @@
                             <span>￥</span>
                             <span th:text="${#numbers.formatDecimal(item.info.price,3,2)}">4499.00</span>
                         </li>
-                        <li style="color: red" th:if="${item.seckillSkuVo != null}">
 
-                            <span th:if="${#dates.createNow().getTime() < item.seckillSkuVo.startTime}">
-                                商品将会在[[${#dates.format(new java.util.Date(item.seckillSkuVo.startTime),"yyyy-MM-dd HH:mm:ss")}]]进行秒杀
-                            </span>
-
-                            <span th:if="${#dates.createNow().getTime() >= item.seckillSkuVo.startTime && #dates.createNow().getTime() <= item.seckillSkuVo.endTime}">
-                                秒杀价  [[${#numbers.formatDecimal(item.seckillSkuVo.seckillPrice,1,2)}]]
-                            </span>
-
-                        </li>
                         <li>
                             <a href="/static/item/">
                                 预约说明
@@ -608,7 +598,7 @@
 
                         </li>
                         <li>
-                            <span th:text="${item.hasStock?'有货':'无货'}">无货</span>， 此商品暂时售完
+                            <span th:text="${item.hasStock?'有货':'无货'}">无货， 此商品暂时售完</span>
                         </li>
                     </ul>
                 </div>
@@ -678,20 +668,7 @@
                         </div>
                     </div>
 
-                    <div class="box-btns-two"
-                         th:if="${item.seckillSkuVo == null }">
-                        <a class="addToCart" href="#" th:attr="skuId=${item.info.skuId}">
-                            加入购物车
-                        </a>
-                    </div>
 
-                    <div class="box-btns-two"
-                         th:if="${item.seckillSkuVo != null && (#dates.createNow().getTime() >= item.seckillSkuVo.startTime && #dates.createNow().getTime() <= item.seckillSkuVo.endTime)}">
-                        <a class="seckill" href="#"
-                           th:attr="skuId=${item.info.skuId},sessionId=${item.seckillSkuVo.promotionSessionId},code=${item.seckillSkuVo.randomCode}">
-                            立即抢购
-                        </a>
-                    </div>
 
                     <div class="box-btns-three">
                         <img src="/static/item/img/e4ed3606843f664591ff1f68f7fda12d.png" alt=""/> 分享
@@ -1374,7 +1351,7 @@
             filterEle = $(filterEle).filter(skus[i])[0];
         }
 
-        location.href = "http://item.gulimall.com/" + filterEle + ".html";
+        location.href = "http://item.project.com/" + filterEle + ".html";
 
         return false;
     });
@@ -1391,7 +1368,7 @@
     $(".addToCart").click(function () {
         let skuId = $(this).attr("skuId");
         let num = $("#productNum").val();
-        location.href = "http://cart.gulimall.com/addCartItem?skuId=" + skuId + "&num=" + num;
+        location.href = "http://cart.project.com/addCartItem?skuId=" + skuId + "&num=" + num;
         return false;
     });
 
@@ -1401,7 +1378,7 @@
             var killId = $(this).attr("sessionid") + "-" + $(this).attr("skuid");
             var code = $(this).attr("code");
             var num = $("#productNum").val();
-            location.href = "http://seckill.gulimall.com/kill?killId=" + killId + "&key=" + code + "&num=" + num;
+            location.href = "http://seckill.project.com/kill?killId=" + killId + "&key=" + code + "&num=" + num;
         } else {
             alert("秒杀请先登录");
         }

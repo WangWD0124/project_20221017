@@ -2,7 +2,11 @@ package com.wwd.modules.product.dao;
 
 import com.wwd.common.dao.BaseDao;
 import com.wwd.modules.product.entity.SkuSaleAttrValueEntity;
+import com.wwd.modules.product.vo.SkuItemVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * sku销售属性&值
@@ -12,5 +16,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SkuSaleAttrValueDao extends BaseDao<SkuSaleAttrValueEntity> {
-	
+
+    List<SkuItemVo.SkuItemSaleAttrVo> getSkuSaleAttrVoBySpuId(@Param("spu_id") Long spu_id);
+
 }

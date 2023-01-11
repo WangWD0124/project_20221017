@@ -2,6 +2,7 @@ package com.wwd.modules.product.dao;
 
 import com.wwd.common.dao.BaseDao;
 import com.wwd.modules.product.entity.ProductAttrValueEntity;
+import com.wwd.modules.product.vo.SkuItemVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

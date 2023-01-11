@@ -1212,7 +1212,7 @@
                                 <span th:text="'￥' + ${product.price}"></span>
                             </p>
                             <p class="tab_JE">
-                                <a href="/list.html" th:utext="${product.skuTitle}">
+                                <a th:href="|http://item.project.com/${product.skuId}.html|" th:utext="${product.skuTitle}">
                                 </a>
                             </p>
                             <p class="tab_PI">已有<span>11万+</span>热门评价

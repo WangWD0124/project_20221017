@@ -6,9 +6,11 @@ import com.wwd.modules.product.dao.SkuSaleAttrValueDao;
 import com.wwd.modules.product.dto.SkuSaleAttrValueDTO;
 import com.wwd.modules.product.entity.SkuSaleAttrValueEntity;
 import com.wwd.modules.product.service.SkuSaleAttrValueService;
+import com.wwd.modules.product.vo.SkuItemVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,4 +33,8 @@ public class SkuSaleAttrValueServiceImpl extends CrudServiceImpl<SkuSaleAttrValu
     }
 
 
+    @Override
+    public List<SkuItemVo.SkuItemSaleAttrVo> getSkuSaleAttrVoBySpuId(Long spu_id) {
+        return baseDao.getSkuSaleAttrVoBySpuId(spu_id);
+    }
 }
