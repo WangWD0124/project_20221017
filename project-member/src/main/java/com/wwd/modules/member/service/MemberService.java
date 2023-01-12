@@ -2,6 +2,7 @@ package com.wwd.modules.member.service;
 
 import com.wwd.common.service.CrudService;
 import com.wwd.modules.member.dto.MemberDTO;
+import com.wwd.modules.member.dto.UserRegistDTO;
 import com.wwd.modules.member.entity.MemberEntity;
 
 /**
@@ -12,4 +13,5 @@ import com.wwd.modules.member.entity.MemberEntity;
  */
 public interface MemberService extends CrudService<MemberEntity, MemberDTO> {
 
+    void register(UserRegistDTO userRegistDTO);
 }

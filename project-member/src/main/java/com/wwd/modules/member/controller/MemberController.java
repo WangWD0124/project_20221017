@@ -11,6 +11,7 @@ import com.wwd.common.validator.group.AddGroup;
 import com.wwd.common.validator.group.DefaultGroup;
 import com.wwd.common.validator.group.UpdateGroup;
 import com.wwd.modules.member.dto.MemberDTO;
+import com.wwd.modules.member.dto.UserRegistDTO;
 import com.wwd.modules.member.excel.MemberExcel;
 import com.wwd.modules.member.service.MemberService;
 import io.swagger.annotations.Api;
@@ -61,6 +62,19 @@ public class MemberController {
         MemberDTO data = memberService.get(id);
 
         return new Result<MemberDTO>().ok(data);
+    }
+
+    @PostMapping("register")
+    @ApiOperation("注册")
+    @LogOperation("注册")
+    //@RequiresPermissions("member:member:register")
+    public Result register(@RequestBody UserRegistDTO userRegistDTO){
+        //效验数据
+        ValidatorUtils.validateEntity(userRegistDTO, AddGroup.class, DefaultGroup.class);
+
+        memberService.register(userRegistDTO);
+
+        return new Result();
     }
 
     @PostMapping
