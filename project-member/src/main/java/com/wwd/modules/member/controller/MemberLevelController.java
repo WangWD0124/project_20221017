@@ -63,6 +63,15 @@ public class MemberLevelController {
         return new Result<List<MemberLevelDTO>>().ok(list);
     }
 
+//    @GetMapping("defaultLevelId")
+//    @ApiOperation("默认等级ID")
+//    //@RequiresPermissions("menber:memberlevel:page")
+//    public Result<Long> getLevelIdByDefaultStatus(){
+//        Long id = memberLevelService.getLevelIdByDefaultStatus();
+//
+//        return new Result<Long>().ok(id);
+//    }
+
     @GetMapping("{id}")
     @ApiOperation("信息")
     //@RequiresPermissions("menber:memberlevel:info")

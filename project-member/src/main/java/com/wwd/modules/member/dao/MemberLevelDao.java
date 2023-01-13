@@ -3,6 +3,7 @@ package com.wwd.modules.member.dao;
 import com.wwd.common.dao.BaseDao;
 import com.wwd.modules.member.entity.MemberLevelEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 会员等级
@@ -12,5 +13,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface MemberLevelDao extends BaseDao<MemberLevelEntity> {
-	
+
+    Long getLevelIdByDefaultStatus();
 }

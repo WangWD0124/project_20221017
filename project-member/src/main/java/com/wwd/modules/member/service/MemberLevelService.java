@@ -16,4 +16,6 @@ import java.util.Map;
 public interface MemberLevelService extends CrudService<MemberLevelEntity, MemberLevelDTO> {
 
     List<MemberLevelDTO> list();
+
+    Long getLevelIdByDefaultStatus();
 }

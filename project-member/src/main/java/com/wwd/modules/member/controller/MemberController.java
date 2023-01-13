@@ -3,6 +3,7 @@ package com.wwd.modules.member.controller;
 import com.wwd.common.annotation.LogOperation;
 import com.wwd.common.constant.Constant;
 import com.wwd.common.page.PageData;
+import com.wwd.common.utils.ConvertUtils;
 import com.wwd.common.utils.ExcelUtils;
 import com.wwd.common.utils.Result;
 import com.wwd.common.validator.AssertUtils;
@@ -11,8 +12,12 @@ import com.wwd.common.validator.group.AddGroup;
 import com.wwd.common.validator.group.DefaultGroup;
 import com.wwd.common.validator.group.UpdateGroup;
 import com.wwd.modules.member.dto.MemberDTO;
+import com.wwd.modules.member.dto.UserLoginDTO;
 import com.wwd.modules.member.dto.UserRegistDTO;
+import com.wwd.modules.member.entity.MemberEntity;
 import com.wwd.modules.member.excel.MemberExcel;
+import com.wwd.modules.member.exception.PhoneExsitException;
+import com.wwd.modules.member.exception.UserNameExsitException;
 import com.wwd.modules.member.service.MemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -64,6 +69,25 @@ public class MemberController {
         return new Result<MemberDTO>().ok(data);
     }
 
+//    @GetMapping("{userName}")
+//    @ApiOperation("用户名查重")
+//    //@RequiresPermissions("member:member:info")
+//    public Result checkUserName(@PathVariable("userName") String userName){
+//        try {
+//            memberService.checkUserName(userName);
+//        } catch (Exception e)
+//
+//        return new Result();
+//    }
+//
+//    @GetMapping("{phone}")
+//    @ApiOperation("手机号码查重")
+//    //@RequiresPermissions("member:member:info")
+//    public Result checkPhone(@PathVariable("phone") String phone){
+//        memberService.checkPhone(phone);
+//        return new Result();
+//    }
+
     @PostMapping("register")
     @ApiOperation("注册")
     @LogOperation("注册")
@@ -71,10 +95,31 @@ public class MemberController {
     public Result register(@RequestBody UserRegistDTO userRegistDTO){
         //效验数据
         ValidatorUtils.validateEntity(userRegistDTO, AddGroup.class, DefaultGroup.class);
-
-        memberService.register(userRegistDTO);
-
+        try {
+            memberService.register(userRegistDTO);
+        } catch (PhoneExsitException e){
+            return new Result().error(1, e.getMessage());
+        } catch (UserNameExsitException e){
+            return new Result().error(2, e.getMessage());
+        }
         return new Result();
+    }
+
+    @PostMapping("login")
+    @ApiOperation("登录")
+    @LogOperation("登录")
+    //@RequiresPermissions("member:member:register")
+    public Result login(@RequestBody UserLoginDTO userLoginDTO){
+        //效验数据
+        ValidatorUtils.validateEntity(userLoginDTO, AddGroup.class, DefaultGroup.class);
+
+        MemberEntity memberEntity = memberService.login(userLoginDTO);
+        MemberDTO memberDTO = ConvertUtils.sourceToTarget(memberEntity, MemberDTO.class);
+        if (memberEntity != null){
+            return new Result().ok(memberDTO);
+        } else {
+            return new Result().error(1, "账号或密码有误");
+        }
     }
 
     @PostMapping

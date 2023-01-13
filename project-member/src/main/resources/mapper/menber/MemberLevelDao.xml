@@ -17,4 +17,7 @@
     </resultMap>
 
 
+    <select id="getLevelIdByDefaultStatus" resultType="Long">
+        select id from ums_member_level where default_status=1
+    </select>
 </mapper>

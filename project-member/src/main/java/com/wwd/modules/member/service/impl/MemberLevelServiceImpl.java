@@ -37,4 +37,9 @@ public class MemberLevelServiceImpl extends CrudServiceImpl<MemberLevelDao, Memb
     public List<MemberLevelDTO> list() {
         return ConvertUtils.sourceToTarget(baseDao.selectList(null), MemberLevelDTO.class);
     }
+
+    @Override
+    public Long getLevelIdByDefaultStatus() {
+        return baseDao.getLevelIdByDefaultStatus();
+    }
 }
