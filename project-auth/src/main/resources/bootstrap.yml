@@ -1,5 +1,8 @@
 server:
   port: 9801
+  servlet:
+    session:
+      timeout: 30m
 #profiles:
 #  active: dev  # 开发、测试、生产环境、test、prop
 spring:

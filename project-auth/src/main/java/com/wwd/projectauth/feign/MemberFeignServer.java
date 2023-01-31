@@ -1,7 +1,9 @@
 package com.wwd.projectauth.feign;
 
+import com.alibaba.fastjson.JSONObject;
 import com.wwd.common.annotation.LogOperation;
 import com.wwd.common.utils.Result;
+import com.wwd.projectauth.dto.SocialUser;
 import com.wwd.projectauth.dto.UserLoginDTO;
 import com.wwd.projectauth.dto.UserRegistDTO;
 import io.swagger.annotations.ApiOperation;
@@ -19,4 +21,7 @@ public interface MemberFeignServer {
 
     @PostMapping("member/member/login")
     public Result login(@RequestBody UserLoginDTO userLoginDTO);
+
+    @PostMapping("member/member/giteeInfo")
+    public Result giteeInfo(SocialUser socialUser);
 }

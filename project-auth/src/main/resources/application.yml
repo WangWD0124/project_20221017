@@ -107,8 +107,8 @@ spring:
       enabled: true
   thymeleaf:
     cache: false
-
-
+  session:
+    store-type: redis
   ## -----------------------redis-----------------------
   cache:
     type: redis
@@ -124,12 +124,12 @@ spring:
     cluster:
       nodes: project.com:6379, project.com:6380, project.com:6381, project.com:6382, project.com:6383, project.com:6384
   #    timeout: 6000ms  # 连接超时时长（毫秒）
-#    jedis:
-#      pool:
-#        max-active: 1000  # 连接池最大连接数（使用负值表示没有限制）
-#        max-wait: -1ms      # 连接池最大阻塞等待时间（使用负值表示没有限制）
-#        max-idle: 10      # 连接池中的最大空闲连接
-#        min-idle: 5       # 连接池中的最小空闲连接
+    jedis:
+      pool:
+        max-active: 1000  # 连接池最大连接数（使用负值表示没有限制）
+        max-wait: -1ms      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 10      # 连接池中的最大空闲连接
+        min-idle: 5       # 连接池中的最小空闲连接
 #    sentinel:
 #      master: mymaster
 #      nodes:
@@ -207,3 +207,9 @@ project:
     core-size: 20
     max-size: 200
     keep-alive-time: 10
+
+oauth:
+  gitee:
+    clientid: cb922fb6126a9cd3a6eb644c4443e2f78e0c225c52a08e9b4525baeec5b72eef
+    clientsecret: 217ce839177e4926d0d3f099d1cbd2e04ec28f87970ba068335da1729932c56c
+    callback: http://auth.project.com/oauth/gitee/callback

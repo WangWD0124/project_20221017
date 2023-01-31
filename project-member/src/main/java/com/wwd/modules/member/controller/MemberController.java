@@ -1,5 +1,6 @@
 package com.wwd.modules.member.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.wwd.common.annotation.LogOperation;
 import com.wwd.common.constant.Constant;
 import com.wwd.common.page.PageData;
@@ -12,6 +13,7 @@ import com.wwd.common.validator.group.AddGroup;
 import com.wwd.common.validator.group.DefaultGroup;
 import com.wwd.common.validator.group.UpdateGroup;
 import com.wwd.modules.member.dto.MemberDTO;
+import com.wwd.modules.member.dto.SocialUser;
 import com.wwd.modules.member.dto.UserLoginDTO;
 import com.wwd.modules.member.dto.UserRegistDTO;
 import com.wwd.modules.member.entity.MemberEntity;
@@ -115,10 +117,25 @@ public class MemberController {
 
         MemberEntity memberEntity = memberService.login(userLoginDTO);
         MemberDTO memberDTO = ConvertUtils.sourceToTarget(memberEntity, MemberDTO.class);
-        if (memberEntity != null){
+        if (memberDTO != null){
             return new Result().ok(memberDTO);
         } else {
             return new Result().error(1, "账号或密码有误");
+        }
+    }
+
+    @PostMapping("giteeInfo")
+    @ApiOperation("社交登录")
+    @LogOperation("社交登录")
+    //@RequiresPermissions("member:member:register")
+    public Result giteeInfo(@RequestBody SocialUser socialUser){
+
+        MemberEntity memberEntity = memberService.giteeInfo(socialUser);
+        MemberDTO memberDTO = ConvertUtils.sourceToTarget(memberEntity, MemberDTO.class);
+        if (memberDTO != null){
+            return new Result().ok(memberDTO);
+        } else {
+            return new Result().error(1, "gitee账号登录失败");
         }
     }
 

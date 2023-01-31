@@ -1,18 +1,18 @@
 package com.wwd.modules.member.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wwd.common.service.impl.CrudServiceImpl;
 import com.wwd.modules.member.dao.MemberDao;
-import com.wwd.modules.member.dto.MemberDTO;
-import com.wwd.modules.member.dto.UserLoginDTO;
-import com.wwd.modules.member.dto.UserRegistDTO;
+import com.wwd.modules.member.dto.*;
 import com.wwd.modules.member.entity.MemberEntity;
 import com.wwd.modules.member.exception.PhoneExsitException;
 import com.wwd.modules.member.exception.UserNameExsitException;
 import com.wwd.modules.member.service.MemberLevelService;
 import com.wwd.modules.member.service.MemberService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -110,4 +110,44 @@ public class MemberServiceImpl extends CrudServiceImpl<MemberDao, MemberEntity, 
             }
         }
     }
+
+    @Override
+    public MemberEntity giteeInfo(SocialUser socialUser) {
+
+        GiteeUser giteeUser = new GiteeUser();
+
+        String social_uid = socialUser.getSocial_uid();
+        String name = socialUser.getName();
+
+        LambdaQueryWrapper<MemberEntity> wrapper = new LambdaQueryWrapper();
+        wrapper.eq(MemberEntity::getSocialUid, social_uid);
+        MemberEntity memberEntity = baseDao.selectOne(wrapper);
+        //首次社交登录
+        if (memberEntity == null){
+            MemberEntity registerMemberEntity = new MemberEntity();
+            registerMemberEntity.setNickname(name);//用户名
+            registerMemberEntity.setLevelId(memberLevelService.getLevelIdByDefaultStatus());//会员默认等级
+            registerMemberEntity.setCreateTime(new Date());//注册时间
+            registerMemberEntity.setSocialUid(social_uid);
+            registerMemberEntity.setAccessToken(socialUser.getAlcess_token());
+            registerMemberEntity.setExpiresIn(socialUser.getExpires_in());
+            baseDao.insert(registerMemberEntity);
+            return registerMemberEntity;
+        } else {//非首次社交登录
+            MemberEntity updateMemberEntity = new MemberEntity();
+            updateMemberEntity.setId(memberEntity.getId());//指定id
+            updateMemberEntity.setNickname(name);//修改用户名
+            updateMemberEntity.setAccessToken(socialUser.getAlcess_token());//修改access_token
+            updateMemberEntity.setExpiresIn(socialUser.getExpires_in());//修改expires_in
+            baseDao.updateById(updateMemberEntity);
+
+            memberEntity.setNickname(name);//修改用户名
+            memberEntity.setAccessToken(socialUser.getAlcess_token());//修改access_token
+            memberEntity.setExpiresIn(socialUser.getExpires_in());//修改expires_in
+            return memberEntity;
+        }
+
+    }
+
+
 }
