@@ -30,6 +30,7 @@
         <module>project-ware</module>
         <module>project-coupon</module>
         <module>project-order</module>
+        <module>project-cart</module>
         <module>project-search</module>
         <module>project-auth</module>
     </modules>

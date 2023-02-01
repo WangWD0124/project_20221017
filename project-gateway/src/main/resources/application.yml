@@ -74,6 +74,13 @@ spring:
           predicates: # 路由断言，也就是判断请求是否符合路由规则的条件
             - Host=auth.project.com # 这个是按照域名匹配，只要以**.project.com开头就符合要求，注意：nginx代理给网关会丢掉域名头
 
+        - id: project-cart-route # 路由id，自定义，只要唯一即可
+          # uri: http://localhost:9101 # 路由的目标地址 http就是固定地址
+          uri: lb://project-cart # 路由的目标地址 lb就是负载均衡，后面跟服务名称
+          predicates: # 路由断言，也就是判断请求是否符合路由规则的条件
+            - Host=cart.project.com # 这个是按照域名匹配，只要以**.project.com开头就符合要求，注意：nginx代理给网关会丢掉域名头
+
+
       # 跨域问题解决方案（一）：配置允许请求跨域
       # 全局的跨域配置
       #      globalcors:

@@ -8,9 +8,9 @@
         <version>1.0.0</version>
     </parent>
     <groupId>com.wwd</groupId>
-    <artifactId>project-auth</artifactId>
+    <artifactId>project-cart</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>project-auth</name>
+    <name>project-cart</name>
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>1.8</java.version>
@@ -27,7 +27,6 @@
             <artifactId>common</artifactId>
             <version>1.0.0</version>
         </dependency>
-
     </dependencies>
 
     <build>
