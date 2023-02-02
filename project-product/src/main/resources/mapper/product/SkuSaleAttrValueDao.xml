@@ -23,5 +23,9 @@
         select t2.attr_name,t2.attr_value,GROUP_CONCAT(distinct t2.sku_id) as skuIds from pms_sku_info t1 join pms_sku_sale_attr_value t2 on t1.sku_id=t2.sku_id where t1.spu_id = #{spu_id} group by t2.attr_name,t2.attr_value
     </select>
 
+    <select id="getSaleAttrValueStringListBySkuId" resultType="java.lang.String">
+        select CONCAT(attr_name,"：",attr_value) from pms_sku_sale_attr_value where sku_id = #{sku_id}
+    </select>
+
 
 </mapper>

@@ -1,4 +1,4 @@
-package com.wwd.modules.product.dto;
+package com.wwd.projectcart.dto;
 
 import com.wwd.common.feign.dto.coupon.MemberPriceDTO;
 import io.swagger.annotations.ApiModel;
@@ -6,14 +6,10 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
-
 import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * 商品sku管理页
- *
  * sku信息
  *
  * @author wwd 1245436962@qq.com

@@ -9,6 +9,9 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * 商品详情页
+ */
 @Data
 public class SkuItemVo {
 
@@ -20,7 +23,7 @@ public class SkuItemVo {
     //sku图片集
     private List<SkuImagesDTO> images;
 
-    //sku销售属性
+    //相同spu的全部sku销售属性
     private List<SkuItemSaleAttrVo> saleAttr;//相关属性及其系列值
     @Data
     public static class SkuItemSaleAttrVo{
@@ -50,5 +53,8 @@ public class SkuItemVo {
         private String attrName;
         private String attrValue;
     }
+
+    //是否秒杀
+    private Boolean seckillSkuVo;
 
 }

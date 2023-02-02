@@ -40,7 +40,7 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment} # 路径重写
 
-        - id: project-product-route # 路由id，自定义，只要唯一即可
+        - id: project-product-admin-route # 路由id，自定义，只要唯一即可
           # uri: http://localhost:9101 # 路由的目标地址 http就是固定地址
           uri: lb://project-product # 路由的目标地址 lb就是负载均衡，后面跟服务名称
           predicates: # 路由断言，也就是判断请求是否符合路由规则的条件

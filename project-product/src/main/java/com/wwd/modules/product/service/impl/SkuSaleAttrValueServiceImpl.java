@@ -37,4 +37,9 @@ public class SkuSaleAttrValueServiceImpl extends CrudServiceImpl<SkuSaleAttrValu
     public List<SkuItemVo.SkuItemSaleAttrVo> getSkuSaleAttrVoBySpuId(Long spu_id) {
         return baseDao.getSkuSaleAttrVoBySpuId(spu_id);
     }
+
+    @Override
+    public List<String> getSaleAttrValueStringListBySkuId(Long sku_id) {
+        return baseDao.getSaleAttrValueStringListBySkuId(sku_id);
+    }
 }

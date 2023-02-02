@@ -4,7 +4,6 @@ import com.wwd.common.service.CrudService;
 import com.wwd.modules.product.dto.SkuSaleAttrValueDTO;
 import com.wwd.modules.product.entity.SkuSaleAttrValueEntity;
 import com.wwd.modules.product.vo.SkuItemVo;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,4 +17,5 @@ public interface SkuSaleAttrValueService extends CrudService<SkuSaleAttrValueEnt
 
     List<SkuItemVo.SkuItemSaleAttrVo> getSkuSaleAttrVoBySpuId(Long spu_id);
 
+    List<String> getSaleAttrValueStringListBySkuId(Long sku_id);
 }

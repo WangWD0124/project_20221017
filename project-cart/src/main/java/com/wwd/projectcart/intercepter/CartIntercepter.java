@@ -20,7 +20,7 @@ import java.util.UUID;
 @Component
 public class CartIntercepter implements HandlerInterceptor {
 
-    //实现同一线程数据共享
+    //TODO ThreadLocal实现同一线程数据共享
     public final static ThreadLocal<UserInfoDTO> threadLocal = new ThreadLocal<>();
     /**
      * 在目标方法执行之前

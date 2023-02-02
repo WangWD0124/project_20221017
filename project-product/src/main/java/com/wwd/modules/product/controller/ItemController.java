@@ -1,4 +1,4 @@
-package com.wwd.modules.product.web;
+package com.wwd.modules.product.controller;
 
 import com.wwd.modules.product.service.SkuInfoService;
 import com.wwd.modules.product.vo.SkuItemVo;

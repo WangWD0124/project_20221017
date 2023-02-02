@@ -6,6 +6,9 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * 搜索结果页
+ */
 @Data
 public class SkuEsModel {
 

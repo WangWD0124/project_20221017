@@ -55,6 +55,15 @@ public class SkuSaleAttrValueController {
         return new Result<PageData<SkuSaleAttrValueDTO>>().ok(page);
     }
 
+    @GetMapping("/valueString/{skuId}")
+    @ApiOperation("sku属性值字符串")
+    @RequiresPermissions("product:skusaleattrvalue:info")
+    public Result<List<String>> getSaleAttrValueStringListBySkuId(@PathVariable("skuId") Long skuId){
+        List<String> saleAttrValueStringList = skuSaleAttrValueService.getSaleAttrValueStringListBySkuId(skuId);
+
+        return new Result<List<String>>().ok(saleAttrValueStringList);
+    }
+
     @GetMapping("{id}")
     @ApiOperation("信息")
     @RequiresPermissions("product:skusaleattrvalue:info")

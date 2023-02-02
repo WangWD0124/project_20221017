@@ -1,4 +1,4 @@
-package com.wwd.modules.product.web;
+package com.wwd.modules.product.controller;
 
 import com.wwd.modules.product.dto.CategoryDTO;
 import com.wwd.modules.product.service.CategoryService;
