@@ -55,6 +55,15 @@ public class MemberReceiveAddressController {
         return new Result<PageData<MemberReceiveAddressDTO>>().ok(page);
     }
 
+    @GetMapping("addressList/{memberId}")
+    @ApiOperation("用户收货地址列表")
+    @RequiresPermissions("menber:memberreceiveaddress:info")
+    public Result<List<MemberReceiveAddressDTO>> getAddressListByMemberId(@PathVariable("memberId") Long memberId){
+        List<MemberReceiveAddressDTO> addressDTOList = memberReceiveAddressService.getAddressListByMemberId(memberId);
+
+        return new Result<List<MemberReceiveAddressDTO>>().ok(addressDTOList);
+    }
+
     @GetMapping("{id}")
     @ApiOperation("信息")
     @RequiresPermissions("menber:memberreceiveaddress:info")

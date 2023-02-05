@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -68,6 +69,15 @@ public class SkuInfoController {
         PageData<SkuInfoDTO> page = skuInfoService.search(params);
 
         return new Result<PageData<SkuInfoDTO>>().ok(page);
+    }
+
+    @GetMapping("price/{id}")
+    @ApiOperation("价格")
+    @RequiresPermissions("product:skuinfo:info")
+    public Result<BigDecimal> getPrice(@PathVariable("id") Long id){
+        SkuInfoDTO data = skuInfoService.get(id);
+        BigDecimal price = data.getPrice();
+        return new Result<BigDecimal>().ok(price);
     }
 
     @GetMapping("{id}")

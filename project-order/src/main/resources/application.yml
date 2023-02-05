@@ -41,18 +41,7 @@
 #  sentinel:
 #    enabled: true # 开启feign对sentinel的支持
 #
-### -----------------------rabbitmq消息队列-----------------------
-#spring:
-#  rabbitmq:
-#    host: localhost #主机名
-#    port: 5672 #端口
-#    username: guest #用户名
-#    password: guest #密码
-#    virtual-host: / #虚拟主机
-#    listener:
-#      direct:
-#        prefetch: 1 # 每次只能获取一条消息，处理完才能获取下一个消息
-#
+
 ### -----------------------sentinel流量控制-----------------------
 #  cloud:
 #    sentinel:
@@ -99,39 +88,62 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
+    # static-path-pattern: /static/**
   servlet:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
       enabled: true
-  redis:
-    database: 0
-    host: 192.168.10.10
-    port: 6379
-    password:    # 密码（默认为空）
-    timeout: 6000ms  # 连接超时时长（毫秒）
-    jedis:
-      pool:
-        max-active: 1000  # 连接池最大连接数（使用负值表示没有限制）
-        max-wait: -1ms      # 连接池最大阻塞等待时间（使用负值表示没有限制）
-        max-idle: 10      # 连接池中的最大空闲连接
-        min-idle: 5       # 连接池中的最小空闲连接
-
-
-  # 是否开启redis缓存  true开启   false关闭
-  renren:
-    redis:
-      open: false
-
+  session:
+    store-type: redis
+  thymeleaf:
+    cache: false
 
   ## -----------------------redis-----------------------
-#  redis:
-#    sentinel:
-#      master: mymaster
-#      nodes:
-#        - 192.168.145.101:16379
-#        - 192.168.145.101:16380
-#        - 192.168.145.101:16381
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000
+      # use-key-prefix: true
+      # key-prefix: CACHE_
+      cache-null-values: true
+  redis:
+    #    host: 192.168.145.101
+    #    port: 6379
+    password: 123456   # 密码（默认为空）
+    cluster:
+      nodes: project.com:6379, project.com:6380, project.com:6381, project.com:6382, project.com:6383, project.com:6384
+  #    timeout: 6000ms  # 连接超时时长（毫秒）
+  #    jedis:
+  #      pool:
+  #        max-active: 1000  # 连接池最大连接数（使用负值表示没有限制）
+  #        max-wait: -1ms      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+  #        max-idle: 10      # 连接池中的最大空闲连接
+  #        min-idle: 5       # 连接池中的最小空闲连接
+  #    sentinel:
+  #      master: mymaster
+  #      nodes:
+  #        - 192.168.145.101:16379
+  #        - 192.168.145.101:16380
+  #        - 192.168.145.101:16381
+  ### -----------------------rabbitmq消息队列-----------------------
+  rabbitmq:
+    host: 192.168.145.101 #主机名
+    port: 5672 #端口
+    username: guest #用户名
+    password: guest #密码
+    virtual-host: / #虚拟主机
+    publisher-returns: true # 发送端确认
+    publisher-confirm-type: correlated # 发送端消息抵达确认
+    template:
+      mandatory: true # 发送端确认抵达优先执行自定义回调
+    listener:
+      simple:
+        acknowledge-mode: manual # ack 手动确认收到消息模式，避免消费端异常或宕机造成消息丢失
+  # 是否开启redis缓存  true开启   false关闭
+#  project:
+#    redis:
+#      open: true
 
 ## -----------------------mybatis-plus配置-----------------------
 #mybatis
@@ -144,6 +156,8 @@ mybatis-plus:
     db-config:
       #主键类型
       id-type: ASSIGN_ID
+      logic-delete-value: 0
+      logic-not-delete-value: 1
     banner: false
   #原生配置
   configuration:
@@ -189,3 +203,8 @@ seata:
 #    password: admin
 #  setting:
 #    enableFooter: false
+project:
+  thread:
+    core-size: 20
+    max-size: 200
+    keep-alive-time: 10

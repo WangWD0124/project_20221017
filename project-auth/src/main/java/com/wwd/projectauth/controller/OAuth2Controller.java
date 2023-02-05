@@ -3,6 +3,7 @@ package com.wwd.projectauth.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.wwd.common.constant.AuthServerConstant;
 import com.wwd.common.utils.Result;
 import com.wwd.projectauth.dto.SocialUser;
 import com.wwd.projectauth.feign.MemberFeignServer;
@@ -71,7 +72,7 @@ public class OAuth2Controller {
          * 获取到用户信息之后，就该写你自己的业务逻辑了
          */
         Result result = memberFeignServer.giteeInfo(socialUser);
-        session.setAttribute("loginUser", result.getData());
+        session.setAttribute(AuthServerConstant.LOGIN_USER, result.getData());
         return "redirect:http://project.com";
     }
 }

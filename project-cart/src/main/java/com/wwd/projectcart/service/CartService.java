@@ -3,6 +3,7 @@ package com.wwd.projectcart.service;
 import com.wwd.projectcart.dto.Cart;
 import com.wwd.projectcart.dto.CartItem;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public interface CartService {
@@ -19,4 +20,7 @@ public interface CartService {
     void countItem(Long skuId, Integer num);
 
     void deleteItem(Long skuId);
+
+    List<CartItem> getCartItemsChecked(Long memberId);
+
 }

@@ -1,7 +1,7 @@
 package com.wwd.projectauth.controller;
 
 import com.wwd.common.utils.Result;
-import com.wwd.projectauth.constant.AuthServerConstant;
+import com.wwd.common.constant.AuthServerConstant;
 import com.wwd.projectauth.dto.UserLoginDTO;
 import com.wwd.projectauth.dto.UserRegistDTO;
 import com.wwd.projectauth.feign.MemberFeignServer;

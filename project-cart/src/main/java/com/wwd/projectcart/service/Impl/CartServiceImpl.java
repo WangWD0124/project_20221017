@@ -17,6 +17,7 @@ import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -146,17 +147,38 @@ public class CartServiceImpl implements CartService {
         cartOps.delete(skuId.toString());
     }
 
+    /**
+     * 获取全部购物项
+     * @param cartKey
+     * @return
+     */
     private List<CartItem> getCartItems(String cartKey) {
 
         BoundHashOperations<String, Object, Object> operations = redisTemplate.boundHashOps(cartKey);
         List<Object> values = operations.values();
         if (values != null && values.size() > 0){
-            List<CartItem> cartItems = values.stream().map(value ->
-                    JSON.parseObject(value.toString(), CartItem.class)
-            ).collect(Collectors.toList());
+            List<CartItem> cartItems = values.stream().map(value -> {
+                CartItem cartItem = JSON.parseObject(value.toString(), CartItem.class);
+                //远程查询并更新商品最新价格
+                BigDecimal price = productFeignService.getPrice(cartItem.getSkuId()).getData();
+                cartItem.setPrice(price);
+                return cartItem;
+            }).collect(Collectors.toList());
             return cartItems;
         }
         return null;
+    }
+
+    /**
+     * 获取被选中的购物项
+     * @param memberId
+     * @return
+     */
+    public List<CartItem> getCartItemsChecked(Long memberId) {
+
+        List<CartItem> cartItems = getCartItems(memberId.toString());
+        List<CartItem> cartItemsChecked = cartItems.stream().filter(cartItem -> cartItem.getCheck()).collect(Collectors.toList());
+        return cartItemsChecked;
     }
 
     private BoundHashOperations<String, Object, Object> getCartOps() {

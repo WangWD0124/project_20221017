@@ -3,6 +3,7 @@ package com.wwd.modules.order.service;
 import com.wwd.common.service.CrudService;
 import com.wwd.modules.order.dto.OrderDTO;
 import com.wwd.modules.order.entity.OrderEntity;
+import com.wwd.modules.order.vo.OrderConfirmVo;
 
 /**
  * 订单
@@ -12,4 +13,5 @@ import com.wwd.modules.order.entity.OrderEntity;
  */
 public interface OrderService extends CrudService<OrderEntity, OrderDTO> {
 
+    OrderConfirmVo orderConfirm();
 }
