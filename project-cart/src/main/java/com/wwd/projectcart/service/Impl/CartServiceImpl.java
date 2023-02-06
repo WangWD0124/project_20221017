@@ -87,7 +87,7 @@ public class CartServiceImpl implements CartService {
     public CartItem getCartItem(Long skuId) {
 
         BoundHashOperations<String, Object, Object> cart = getCartOps();
-        String res = (String) cart.get(skuId);
+        String res = (String) cart.get(skuId.toString());
         CartItem cartItem = JSON.parseObject(res, CartItem.class);
         return cartItem;
     }
@@ -176,7 +176,7 @@ public class CartServiceImpl implements CartService {
      */
     public List<CartItem> getCartItemsChecked(Long memberId) {
 
-        List<CartItem> cartItems = getCartItems(memberId.toString());
+        List<CartItem> cartItems = getCartItems(CART_PREFIX + memberId.toString());
         List<CartItem> cartItemsChecked = cartItems.stream().filter(cartItem -> cartItem.getCheck()).collect(Collectors.toList());
         return cartItemsChecked;
     }

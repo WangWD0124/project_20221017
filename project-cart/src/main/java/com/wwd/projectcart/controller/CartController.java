@@ -9,9 +9,7 @@ import com.wwd.projectcart.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
@@ -47,10 +45,10 @@ public class CartController {
      * @return
      */
     @GetMapping("/addCartItem")
-    public String addToCart(@RequestParam Long skuId, @RequestParam Integer num, RedirectAttributes attributes) throws ExecutionException, InterruptedException {
+    public String addToCart(@RequestParam("skuId") Long skuId, @RequestParam("num") Integer num, RedirectAttributes attributes) throws ExecutionException, InterruptedException {
 
         cartService.addToCart(skuId, num);
-        attributes.addFlashAttribute("skuId", skuId);
+        attributes.addAttribute("skuId", skuId);//TODO addFlashAttribute区别
         return "redirect:http://cart.project.com/addToCartSuccess";//TODO 利用重定向避免网页重复刷新造成重复添加商品到购物车，重定向需使用RedirectAttributes
     }
 
@@ -61,7 +59,7 @@ public class CartController {
      * @return
      */
     @GetMapping("/addToCartSuccess")
-    public String addToCartSuccess(@RequestParam Long skuId, Model model){
+    public String addToCartSuccess(@RequestParam("skuId") Long skuId, Model model){
 
         CartItem cartItem = cartService.getCartItem(skuId);
         model.addAttribute("cartItem", cartItem);
@@ -69,6 +67,7 @@ public class CartController {
     }
 
     @GetMapping("/getOrderItemsByMemberId/{memberId}")
+    @ResponseBody
     public Result<List<CartItem>> getOrderItemsByMemberId(@PathVariable("memberId") Long memberId){
 
         List<CartItem> cartItems = cartService.getCartItemsChecked(memberId);

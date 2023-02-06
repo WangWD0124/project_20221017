@@ -1,5 +1,7 @@
 package com.wwd.projectcart.intercepter;
 
+import com.alibaba.fastjson.JSON;
+import com.wwd.common.constant.AuthServerConstant;
 import com.wwd.common.constant.CartConstant;
 import com.wwd.projectcart.dto.MemberDTO;
 import com.wwd.projectcart.dto.UserInfoDTO;
@@ -21,7 +23,7 @@ import java.util.UUID;
 public class CartIntercepter implements HandlerInterceptor {
 
     //TODO ThreadLocal实现同一线程数据共享
-    public final static ThreadLocal<UserInfoDTO> threadLocal = new ThreadLocal<>();
+    public static ThreadLocal<UserInfoDTO> threadLocal = new ThreadLocal<>();
     /**
      * 在目标方法执行之前
      * @param request
@@ -35,7 +37,9 @@ public class CartIntercepter implements HandlerInterceptor {
 
 
         HttpSession session = request.getSession();
-        MemberDTO loginUser = (MemberDTO) session.getAttribute("loginUser");
+        Object attribute = session.getAttribute(AuthServerConstant.LOGIN_USER);
+        String s = JSON.toJSONString(attribute);
+        MemberDTO loginUser = JSON.parseObject(s, MemberDTO.class);
         UserInfoDTO userInfoDTO = new UserInfoDTO();
         if (loginUser != null){//已登录
             userInfoDTO.setUserId(loginUser.getId());

@@ -12,5 +12,5 @@ import java.util.List;
 public interface CartServerFeign {
 
     @GetMapping("getOrderItemsByMemberId/{memberId}")
-    public Result<List<OrderItem>> getOrderItemsByMemberId(@PathVariable("memberId") Long memberId);
+    Result<List<OrderItem>> getOrderItemsByMemberId(@PathVariable("memberId") Long memberId);
 }
