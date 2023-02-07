@@ -4,6 +4,8 @@ import com.wwd.common.service.CrudService;
 import com.wwd.modules.order.dto.OrderDTO;
 import com.wwd.modules.order.entity.OrderEntity;
 import com.wwd.modules.order.vo.OrderConfirmVo;
+import com.wwd.modules.order.vo.OrderSubmitResponseVo;
+import com.wwd.modules.order.vo.OrderSubmitVo;
 
 import java.util.concurrent.ExecutionException;
 
@@ -16,4 +18,6 @@ import java.util.concurrent.ExecutionException;
 public interface OrderService extends CrudService<OrderEntity, OrderDTO> {
 
     OrderConfirmVo orderConfirm() throws ExecutionException, InterruptedException;
+
+    OrderSubmitResponseVo orderSubmit(OrderSubmitVo orderSubmitVo);
 }

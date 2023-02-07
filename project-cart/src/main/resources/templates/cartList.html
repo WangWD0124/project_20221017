@@ -278,14 +278,14 @@
 
 		//封装总价钱函数
 		function sumSumPrice() {
-			//         var zzj=0;
-			//         $(".check").each(function () {
-			//             if($(this).prop("checked")){
-			//                 var zj = $(this).parents("ol").find(".zj").html().substring(1);
-			//                 zzj=zzj+parseFloat(zj);
-			//             }
-			//             $(".fnt").html("￥"+zzj+".00")
-			//         });
+			        var zzj=0;
+			        $(".check").each(function () {
+			            if($(this).prop("checked")){
+			                var zj = $(this).parents("ol").find(".zj").html().substring(1);
+			                zzj=zzj+parseFloat(zj);
+			            }
+			            $(".fnt").html("￥"+zzj+".00")
+			        });
 		}
 
 		/*    //购物车结算固定定位
@@ -696,10 +696,10 @@
 				$(".fnt").html("￥" + zzj + ".00")
 			})
 
-			/*        $(".One_ShopCon ul li>div:nth-child(2) ol li:nth-child(5) .zj").each(function(){
+			$(".One_ShopCon ul li>div:nth-child(2) ol li:nth-child(5) .zj").each(function(){
 			            kong+=parseFloat($(this).html().substring(1))
 			        })
-			        $(".fnt").html("￥"+kong+".00")*/
+			        $(".fnt").html("￥"+kong+".00")
 		}
 		//封装总数量函数
 		function sumSumNum() {

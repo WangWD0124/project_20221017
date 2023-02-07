@@ -6,27 +6,27 @@
 # 1、先访问同一个集群中的服务实例；如果同集群中没有该服务实例则访问其他集群的，且报警提示；
 # 2、确定服务列表；
 # 3、在列表中采用随机访问策略
-project-member:
-  ribbon:
-    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
-project-ware:
-  ribbon:
-    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
-project-order:
-  ribbon:
-    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
-project-coupon:
-  ribbon:
-    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
-# 针对要访问的各个服务设置负载均衡饥饿加载
-ribbon:
-  eager-load:
-    enabled: true
-    clients:
-      - project-member
-      - project-ware
-      - project-order
-      - project-coupon
+#project-member:
+#  ribbon:
+#    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
+#project-ware:
+#  ribbon:
+#    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
+#project-order:
+#  ribbon:
+#    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
+#project-coupon:
+#  ribbon:
+#    NFLoadBalancerRuleClassName: com.alibaba.cloud.nacos.ribbon.NacosRule
+## 针对要访问的各个服务设置负载均衡饥饿加载
+#ribbon:
+#  eager-load:
+#    enabled: true
+#    clients:
+#      - project-member
+#      - project-ware
+#      - project-order
+#      - project-coupon
 
 ### -----------------------feign远程调用-----------------------
 feign:
@@ -96,10 +96,9 @@ spring:
   messages:
     encoding: UTF-8
     basename: i18n/messages
-  mvc:
+  mvc:  # 请求路径与 Spring MVC 处理映射匹配的默认策略已从AntPathMatcher更改为PathPatternParser
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
-    # static-path-pattern: /static/**
   servlet:
     multipart:
       max-file-size: 100MB
@@ -107,6 +106,8 @@ spring:
       enabled: true
   thymeleaf:
     cache: false
+  session:
+    store-type: redis
 
   ## -----------------------redis-----------------------
   cache:
@@ -142,7 +143,6 @@ spring:
 #      open: true
 
 ## -----------------------mybatis-plus配置-----------------------
-#mybatis
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
   #实体扫描，多个package用逗号或者分号分隔

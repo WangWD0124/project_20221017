@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class OrderConfirmVo {
@@ -33,6 +34,11 @@ public class OrderConfirmVo {
     }
 
     /**
+     * 商品库存
+     */
+    private Map<Long, Long> stocks;
+
+    /**
      * 商品总金额
      */
     private BigDecimal total;
@@ -53,7 +59,7 @@ public class OrderConfirmVo {
     private BigDecimal payPrice;
 
     public BigDecimal getPayPrice() {
-        return getTotal();
+        return getTotal();//暂不考虑优惠减免、运费
     }
 
     /**

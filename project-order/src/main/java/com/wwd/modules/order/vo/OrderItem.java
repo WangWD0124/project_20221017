@@ -18,6 +18,15 @@ public class OrderItem {
     private List<String> skuAttr;
     private BigDecimal price;
     private Integer count;
+    /**
+     * 订单商品总重量
+     */
+    private BigDecimal weight;
+
+    public BigDecimal getWeight() {
+        return new BigDecimal("0.888");
+    }
+
     private BigDecimal totalPrice;
 
     public BigDecimal getTotalPrice() {
