@@ -106,6 +106,15 @@ public class SpuInfoController {
         return new Result<SpuInfoDTO>().ok(data);
     }
 
+    @GetMapping("skuId/{id}")
+    @ApiOperation("信息getSpuInfoBySkuId")
+    @RequiresPermissions("product:spuinfo:info")
+    public Result<SpuInfoDTO> getSpuInfoBySkuId(@PathVariable("id") Long id){
+        SpuInfoDTO data = spuInfoService.getSpuInfoBySkuId(id);
+
+        return new Result<SpuInfoDTO>().ok(data);
+    }
+
     @PostMapping
     @ApiOperation("保存")
     @LogOperation("保存")

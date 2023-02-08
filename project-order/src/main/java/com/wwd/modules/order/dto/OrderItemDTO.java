@@ -81,4 +81,6 @@ public class OrderItemDTO implements Serializable {
 	private Integer giftGrowth;
 
 
+	public void setSpuId() {
+	}
 }

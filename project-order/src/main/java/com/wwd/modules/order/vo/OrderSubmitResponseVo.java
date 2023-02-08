@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class OrderSubmitResponseVo {
 
-    private OrderDTO order;
+    private OrderCreateVo order;
     private Integer code;//成功错误状态码
 
 }

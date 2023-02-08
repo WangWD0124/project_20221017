@@ -13,7 +13,7 @@ public class OrderCreateVo {
 
     private OrderDTO order;
 
-    private List<OrderItemDTO> orderItems;
+    private List<OrderItemDTO> orderItemDTOS;
 
     private BigDecimal payPrice;//订单计算的应付价格
 

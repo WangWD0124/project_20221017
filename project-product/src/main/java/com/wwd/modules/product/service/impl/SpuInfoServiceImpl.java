@@ -7,9 +7,11 @@ import com.wwd.common.es.SkuEsModel;
 import com.wwd.common.feign.dto.ware.SkuHasStockVo;
 import com.wwd.common.page.PageData;
 import com.wwd.common.service.impl.CrudServiceImpl;
+import com.wwd.common.utils.ConvertUtils;
 import com.wwd.common.utils.Result;
 import com.wwd.modules.product.dao.SpuInfoDao;
 import com.wwd.modules.product.dto.ProductAttrValueDTO;
+import com.wwd.modules.product.dto.SkuInfoDTO;
 import com.wwd.modules.product.dto.SpuInfoDTO;
 import com.wwd.modules.product.entity.BrandEntity;
 import com.wwd.modules.product.entity.ProductAttrValueEntity;
@@ -151,10 +153,13 @@ public class SpuInfoServiceImpl extends CrudServiceImpl<SpuInfoDao, SpuInfoEntit
             //TODO 执行失败，重复调用？接口幂等性，重试机制？
         }
 
+    }
 
-
-
-
-
+    @Override
+    public SpuInfoDTO getSpuInfoBySkuId(Long id) {
+        SkuInfoDTO skuInfoDTO = skuInfoService.get(id);
+        SpuInfoEntity spuInfoEntity = baseDao.selectById(skuInfoDTO.getSpuId());
+        SpuInfoDTO spuInfoDTO = ConvertUtils.sourceToTarget(spuInfoEntity, SpuInfoDTO.class);
+        return spuInfoDTO;
     }
 }
