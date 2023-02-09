@@ -12,8 +12,12 @@ import com.wwd.common.validator.group.AddGroup;
 import com.wwd.common.validator.group.DefaultGroup;
 import com.wwd.common.validator.group.UpdateGroup;
 import com.wwd.modules.ware.dto.WareSkuDTO;
+import com.wwd.modules.ware.enume.WareEnume;
 import com.wwd.modules.ware.excel.WareSkuExcel;
+import com.wwd.modules.ware.exception.NotStockException;
 import com.wwd.modules.ware.service.WareSkuService;
+import com.wwd.modules.ware.vo.LockStockResult;
+import com.wwd.modules.ware.vo.WareSkuLockVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -73,6 +77,20 @@ public class WareSkuController {
         List<SkuHasStockVo> skuHasStockVos = wareSkuService.getSkuHasStockVoByIds(skuIds);
 
         return new Result<List<SkuHasStockVo>>().ok(skuHasStockVos);
+    }
+
+    @PostMapping("lock/order")
+    @ApiOperation("订单锁定库存")
+    @RequiresPermissions("ware:waresku:info")
+    public Result orderLockStock(@RequestBody WareSkuLockVo wareSkuLockVo) {
+
+        try {
+            Boolean lockStockResult = wareSkuService.orderLockStock(wareSkuLockVo);
+            return new Result();
+        } catch (NotStockException e) {
+            e.printStackTrace();
+            return new Result().error(WareEnume.NO_STOCK_EXCEPTION.getCode(), WareEnume.NO_STOCK_EXCEPTION.getMsg());
+        }
     }
 
     @PostMapping

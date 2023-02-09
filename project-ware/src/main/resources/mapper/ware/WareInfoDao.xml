@@ -10,5 +10,8 @@
         <result property="areacode" column="areacode"/>
     </resultMap>
 
+    <update id="orderLockStock">
+        update wms_ware_sku set stock_locked = stock_locked + #{num} where sku_id = #{skuId} and ware_id = #{wareId} and stock - stock_locked > #{num}
+    </update>
 
 </mapper>

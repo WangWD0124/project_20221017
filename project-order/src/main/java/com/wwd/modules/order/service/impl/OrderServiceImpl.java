@@ -20,12 +20,14 @@ import com.wwd.modules.order.interceptor.LoginUserInterceptor;
 import com.wwd.modules.order.service.OrderItemService;
 import com.wwd.modules.order.service.OrderService;
 import com.wwd.modules.order.vo.*;
+import io.seata.spring.annotation.GlobalTransactional;
 import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
@@ -134,6 +136,8 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
      * @param orderSubmitVo
      * @return
      */
+    @GlobalTransactional //TODO 分布式事务
+    @Transactional
     @Override
     public OrderSubmitResponseVo orderSubmit(OrderSubmitVo orderSubmitVo) {
 
@@ -158,6 +162,31 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
             //创建订单数据
             OrderCreateVo orderCreateVo = createOrder();
             orderSubmitResponseVo.setOrder(orderCreateVo);
+            //验价
+            if (orderSubmitVo.getPayPrice().compareTo(orderCreateVo.getPayPrice()) == 0) {
+                //价格依然相等->保存订单信息
+                saveOrder(orderCreateVo);
+            } else {
+                //价格发生变化
+                orderSubmitResponseVo.setCode(2);//失败
+                return orderSubmitResponseVo;
+            }
+            //锁定库存
+            WareSkuLockVo wareSkuLockVo = new WareSkuLockVo();
+            wareSkuLockVo.setOrderSn(orderCreateVo.getOrder().getOrderSn());
+            List<OrderItem> orderItems = orderCreateVo.getOrderItemDTOS().stream().map(orderItemDTO -> {
+                OrderItem orderItem = new OrderItem();
+                orderItem.setSkuId(orderItemDTO.getSkuId());
+                orderItem.setTitle(orderItemDTO.getSkuName());
+                orderItem.setCount(orderItemDTO.getSkuQuantity());
+                return orderItem;
+            }).collect(Collectors.toList());
+            wareSkuLockVo.setLocks(orderItems);
+            int code = wareServerFeign.orderLockStock(wareSkuLockVo).getCode();
+            if (code != 0){
+                //库存锁定失败
+                orderSubmitResponseVo.setCode(3);//失败
+            }
         }
         return orderSubmitResponseVo;
     }
@@ -188,15 +217,6 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
         //计算应付总额
         computePayPrice(orderDTO, orderItemDTOS);
         orderCreateVo.setPayPrice(orderDTO.getPayAmount());
-        //验价
-        if (orderSubmitVo.getPayPrice().compareTo(orderCreateVo.getPayPrice()) == 0) {
-            //价格依然相等->保存订单信息
-            saveOrder(orderCreateVo);
-            //TODO 锁定库存 -> 异常回滚订单数据
-
-        } else {
-            //价格发生变化
-        }
         return orderCreateVo;
     }
 

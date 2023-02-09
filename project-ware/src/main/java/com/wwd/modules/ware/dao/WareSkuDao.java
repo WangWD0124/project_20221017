@@ -14,5 +14,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface WareSkuDao extends BaseDao<WareSkuEntity> {
 
     Long getSkuHasStockVoBySkuId(Long sku_id);
-	
+
+    Long orderLockStock(Long wareId, Long skuId, Integer num);
 }

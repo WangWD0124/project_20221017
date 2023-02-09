@@ -107,6 +107,11 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
+        </dependency>
+        <!-- 注意seata server版本与该客户端一致 -->
         <!-- 网络请求 -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
