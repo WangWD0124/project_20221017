@@ -16,5 +16,21 @@
         select SUM(stock-stock_locked) from wms_ware_sku where sku_id=#{sku_id}
     </select>
 
+    <select id="getWareIdsHasStickBySkuId">
+        select ware_id from wms_ware_sku where sku_id = #{sku_id} and stock - stock_locked > 0
+    </select>
+
+    <update id="orderLockStock">
+        update wms_ware_sku set stock_locked = stock_locked + #{num} where sku_id = #{skuId} and ware_id = #{wareId} and stock - stock_locked > #{num}
+    </update>
+
+    <update id="orderReleaseStockWithNo">
+        update wms_ware_sku set stock_locked = stock_locked - #{num} where sku_id = #{skuId} and ware_id = #{wareId} and task_id = #{task_id}
+    </update>
+
+    <update id="orderReleaseStockWithOk">
+        update wms_ware_sku set stock_locked = stock_locked - #{num}, stock = stock - #{num} where sku_id = #{skuId} and ware_id = #{wareId} and task_id = #{task_id}
+    </update>
+
 
 </mapper>

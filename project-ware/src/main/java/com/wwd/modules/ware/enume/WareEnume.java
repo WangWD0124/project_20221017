@@ -2,7 +2,7 @@ package com.wwd.modules.ware.enume;
 
 public enum WareEnume {
 
-    NO_STOCK_EXCEPTION(1, "订单商品库存不足，锁定失败");
+    NO_STOCK_EXCEPTION(1, "订单库存锁定失败");
 
     private Integer code;
     private String msg;

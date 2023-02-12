@@ -10,8 +10,9 @@ import lombok.Data;
 @Data
 public class OrderSubmitResponseVo {
 
-    private OrderCreateVo order;
     private Integer code;//成功错误状态码
+    private OrderCreateVo order;
+
 
 }
 

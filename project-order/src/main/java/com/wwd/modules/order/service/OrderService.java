@@ -17,7 +17,27 @@ import java.util.concurrent.ExecutionException;
  */
 public interface OrderService extends CrudService<OrderEntity, OrderDTO> {
 
+    /**
+     * 确认订单
+     * @return
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     OrderConfirmVo orderConfirm() throws ExecutionException, InterruptedException;
 
+    /**
+     * 提交订单
+     * @param orderSubmitVo
+     * @return
+     */
     OrderSubmitResponseVo orderSubmit(OrderSubmitVo orderSubmitVo);
+
+    /**
+     * 查询订单状态
+     * @param orderSn
+     * @return
+     */
+    Integer getStatusByOrderSn(String orderSn);
+
+    Long updateStatusByOrderSn(String orderSn, Integer status);
 }

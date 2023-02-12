@@ -2,6 +2,7 @@ package com.wwd.modules.ware.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import java.util.Date;
  * @since 1.0.0 2022-10-14
  */
 @Data
+@AllArgsConstructor
 @ApiModel(value = "库存工作单")
 public class WareOrderTaskDetailDTO implements Serializable {
     private static final long serialVersionUID = 1L;

@@ -1,5 +1,6 @@
 package com.wwd.modules.order.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.wwd.common.constant.OrderConstant;
@@ -20,7 +21,6 @@ import com.wwd.modules.order.interceptor.LoginUserInterceptor;
 import com.wwd.modules.order.service.OrderItemService;
 import com.wwd.modules.order.service.OrderService;
 import com.wwd.modules.order.vo.*;
-import io.seata.spring.annotation.GlobalTransactional;
 import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,7 +136,7 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
      * @param orderSubmitVo
      * @return
      */
-    @GlobalTransactional //TODO 分布式事务
+    //TODO 分布式事务@GlobalTransactional
     @Transactional
     @Override
     public OrderSubmitResponseVo orderSubmit(OrderSubmitVo orderSubmitVo) {
@@ -159,19 +159,18 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
             orderSubmitResponseVo.setCode(1);//失败
         } else {
             orderSubmitResponseVo.setCode(0);//成功
-            //创建订单数据
+            //1、创建订单数据
             OrderCreateVo orderCreateVo = createOrder();
-            orderSubmitResponseVo.setOrder(orderCreateVo);
-            //验价
+            //2、验价
             if (orderSubmitVo.getPayPrice().compareTo(orderCreateVo.getPayPrice()) == 0) {
-                //价格依然相等->保存订单信息
+                //价格依然相等->3、保存订单信息
                 saveOrder(orderCreateVo);
             } else {
                 //价格发生变化
                 orderSubmitResponseVo.setCode(2);//失败
                 return orderSubmitResponseVo;
             }
-            //锁定库存
+            //4、锁定库存
             WareSkuLockVo wareSkuLockVo = new WareSkuLockVo();
             wareSkuLockVo.setOrderSn(orderCreateVo.getOrder().getOrderSn());
             List<OrderItem> orderItems = orderCreateVo.getOrderItemDTOS().stream().map(orderItemDTO -> {
@@ -182,11 +181,13 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
                 return orderItem;
             }).collect(Collectors.toList());
             wareSkuLockVo.setLocks(orderItems);
-            int code = wareServerFeign.orderLockStock(wareSkuLockVo).getCode();
-            if (code != 0){
+            int code = wareServerFeign.orderLockStock(wareSkuLockVo).getCode();//TODO 分布式事务远程调用要通过返回值获取执行结果
+            if (code != 1){
                 //库存锁定失败
                 orderSubmitResponseVo.setCode(3);//失败
+                throw new RuntimeException();//远程库存锁定失败，抛出运行时异常，回滚订单记录
             }
+            orderSubmitResponseVo.setOrder(orderCreateVo);
         }
         return orderSubmitResponseVo;
     }
@@ -431,6 +432,38 @@ public class OrderServiceImpl extends CrudServiceImpl<OrderDao, OrderEntity, Ord
         orderDTO.setSourceType(0);
 
         return orderDTO;
+    }
+
+
+    /**
+     * 查询订单状态
+     * @param orderSn
+     * @return
+     */
+    @Override
+    public Integer getStatusByOrderSn(String orderSn) {
+
+        LambdaQueryWrapper<OrderEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OrderEntity::getOrderSn, orderSn);
+        OrderEntity orderEntity = baseDao.selectOne(wrapper);
+        Integer status = null;//订单服务异常，订单回滚已不存在
+        if (orderEntity != null){
+            orderEntity.getStatus();
+        }
+        return status;
+    }
+
+    /**
+     * 修改订单状态
+     * @param orderSn
+     * @param status
+     * @return
+     */
+    @Override
+    public Long updateStatusByOrderSn(String orderSn, Integer status) {
+
+        Long res = baseDao.updateStatusByOrderSn(orderSn, status);
+        return res;
     }
 }
 

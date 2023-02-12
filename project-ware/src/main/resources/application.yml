@@ -40,24 +40,6 @@ feign:
     max-connections-per-route: 50 # 每个路径的最大连接数
   sentinel:
     enabled: true # 开启feign对sentinel的支持
-#
-### -----------------------rabbitmq消息队列-----------------------
-#spring:
-#  rabbitmq:
-#    host: localhost #主机名
-#    port: 5672 #端口
-#    username: guest #用户名
-#    password: guest #密码
-#    virtual-host: / #虚拟主机
-#    listener:
-#      direct:
-#        prefetch: 1 # 每次只能获取一条消息，处理完才能获取下一个消息
-#
-### -----------------------sentinel流量控制-----------------------
-#  cloud:
-#    sentinel:
-#      transport:
-#        dashboard: localhost:8090
 
 ## -----------------------mysql数据库-----------------------
 spring:
@@ -108,7 +90,6 @@ spring:
     cache: false
   session:
     store-type: redis
-
   ## -----------------------redis-----------------------
   cache:
     type: redis
@@ -136,8 +117,22 @@ spring:
   #        - 192.168.145.101:16379
   #        - 192.168.145.101:16380
   #        - 192.168.145.101:16381
+  ### -----------------------rabbitmq消息队列-----------------------
+  rabbitmq:
+    host: 192.168.145.101 #主机名
+    port: 5672 #端口
+    username: guest #用户名
+    password: guest #密码
+    virtual-host: / #虚拟主机
+    publisher-returns: true # 发送端确认
+    publisher-confirm-type: correlated # 发送端消息抵达确认
+    template:
+      mandatory: true # 发送端确认抵达优先执行自定义回调
+    listener:
+      simple:
+        acknowledge-mode: manual # ack 手动确认收到消息模式，避免消费端异常或宕机造成消息丢失
 
-  # 是否开启redis缓存  true开启   false关闭
+# 是否开启redis缓存  true开启   false关闭
 #  project:
 #    redis:
 #      open: true
@@ -168,21 +163,21 @@ mybatis-plus:
 
 
 ## -----------------------seata配置-----------------------
-seata:
-  registry: # TC服务注册中心的配置，微服务根据这些信息去注册中心获取tc服务地址
-    type: nacos # 注册中心类型 nacos
-    nacos:
-      server-addr: 192.168.145.101:80 # nacos地址
-      namespace: "" # namespace，默认为空
-      group: DEFAULT_GROUP # 分组，默认是DEFAULT_GROUP
-      application: seata-tc-server # seata服务名称
-      username: nacos
-      password: nacos
-  tx-service-group: seata-demo # 事务组名称
-  service:
-    vgroup-mapping: # 事务组与cluster的映射关系
-      seata-demo: SH
-  data-source-proxy-mode: XA  # AT\TCC\Saga @
+#seata:
+#  registry: # TC服务注册中心的配置，微服务根据这些信息去注册中心获取tc服务地址
+#    type: nacos # 注册中心类型 nacos
+#    nacos:
+#      server-addr: 192.168.145.101:80 # nacos地址
+#      namespace: "" # namespace，默认为空
+#      group: DEFAULT_GROUP # 分组，默认是DEFAULT_GROUP
+#      application: seata-tc-server # seata服务名称
+#      username: nacos
+#      password: nacos
+#  tx-service-group: seata-demo # 事务组名称
+#  service:
+#    vgroup-mapping: # 事务组与cluster的映射关系
+#      seata-demo: SH
+#  data-source-proxy-mode: XA  # AT\TCC\Saga @
 
 
 logging:
@@ -199,7 +194,11 @@ logging:
 #    password: admin
 #  setting:
 #    enableFooter: false
-
+### -----------------------sentinel流量控制-----------------------
+#  cloud:
+#    sentinel:
+#      transport:
+#        dashboard: localhost:8090
 
 project:
   thread:

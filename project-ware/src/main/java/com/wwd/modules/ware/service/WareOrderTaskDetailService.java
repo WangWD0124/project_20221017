@@ -4,6 +4,8 @@ import com.wwd.common.service.CrudService;
 import com.wwd.modules.ware.dto.WareOrderTaskDetailDTO;
 import com.wwd.modules.ware.entity.WareOrderTaskDetailEntity;
 
+import java.util.List;
+
 /**
  * 库存工作单
  *
@@ -12,4 +14,5 @@ import com.wwd.modules.ware.entity.WareOrderTaskDetailEntity;
  */
 public interface WareOrderTaskDetailService extends CrudService<WareOrderTaskDetailEntity, WareOrderTaskDetailDTO> {
 
+    List<WareOrderTaskDetailEntity> getByTaskId(Long TaskId);
 }

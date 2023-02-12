@@ -177,16 +177,16 @@ mybatis-plus:
 #    type: nacos # 注册中心类型 nacos
 #    nacos:
 #      server-addr: 192.168.145.101:80 # nacos地址
-#      namespace: "" # namespace，默认为空
+#      namespace: "dev666" # namespace，默认为空
 #      group: DEFAULT_GROUP # 分组，默认是DEFAULT_GROUP
-#      application: seata-tc-server # seata服务名称
+#      application: seata-server # seata服务名称
 #      username: nacos
 #      password: nacos
 #  tx-service-group: seata-demo # 事务组名称
 #  service:
 #    vgroup-mapping: # 事务组与cluster的映射关系
 #      seata-demo: SH
-#  data-source-proxy-mode: XA  # AT\TCC\Saga @
+  # data-source-proxy-mode: XA  # AT\TCC\Saga @
 
 
 #logging:

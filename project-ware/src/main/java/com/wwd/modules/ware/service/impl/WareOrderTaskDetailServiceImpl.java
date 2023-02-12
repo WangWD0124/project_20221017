@@ -1,5 +1,6 @@
 package com.wwd.modules.ware.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wwd.common.service.impl.CrudServiceImpl;
 import com.wwd.modules.ware.dao.WareOrderTaskDetailDao;
@@ -9,6 +10,7 @@ import com.wwd.modules.ware.service.WareOrderTaskDetailService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,4 +33,12 @@ public class WareOrderTaskDetailServiceImpl extends CrudServiceImpl<WareOrderTas
     }
 
 
+    @Override
+    public List<WareOrderTaskDetailEntity> getByTaskId(Long TaskId) {
+
+        LambdaQueryWrapper<WareOrderTaskDetailEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(WareOrderTaskDetailEntity::getTaskId, TaskId);
+        List<WareOrderTaskDetailEntity> taskDetailEntities = baseDao.selectList(wrapper);
+        return taskDetailEntities;
+    }
 }

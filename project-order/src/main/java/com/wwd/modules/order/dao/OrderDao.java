@@ -3,6 +3,7 @@ package com.wwd.modules.order.dao;
 import com.wwd.common.dao.BaseDao;
 import com.wwd.modules.order.entity.OrderEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 订单
@@ -12,5 +13,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface OrderDao extends BaseDao<OrderEntity> {
-	
+
+    Long updateStatusByOrderSn(@Param("orderSn") String order_sn, @Param("status") Integer status);
 }

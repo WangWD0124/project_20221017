@@ -85,7 +85,7 @@ public class WareSkuController {
     public Result orderLockStock(@RequestBody WareSkuLockVo wareSkuLockVo) {
 
         try {
-            Boolean lockStockResult = wareSkuService.orderLockStock(wareSkuLockVo);
+            wareSkuService.orderLockStock(wareSkuLockVo);
             return new Result();
         } catch (NotStockException e) {
             e.printStackTrace();

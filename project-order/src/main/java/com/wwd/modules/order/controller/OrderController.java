@@ -64,6 +64,26 @@ public class OrderController {
         return new Result<OrderDTO>().ok(data);
     }
 
+    @GetMapping("status/{orderSn}")
+    @ApiOperation("订单状态信息")
+    @RequiresPermissions("order:order:status")
+    public Result<Integer> getStatusByOrderSn(@PathVariable("orderSn") String orderSn){
+        Integer status = orderService.getStatusByOrderSn(orderSn);
+
+        return new Result<Integer>().ok(status);
+    }
+
+    @GetMapping("updateStatus/{orderSn}/{status}")
+    @ApiOperation("修改订单状态信息")
+    @RequiresPermissions("order:order:status")
+    public Result<Integer> updateStatusByOrderSn(@PathVariable("orderSn") String orderSn, @PathVariable("status") Integer status){
+        Long res = orderService.updateStatusByOrderSn(orderSn, status);
+        if (res != 1){
+            return new Result().error(1, "订单关闭失败");
+        }
+        return new Result();
+    }
+
     @PostMapping
     @ApiOperation("保存")
     @LogOperation("保存")
